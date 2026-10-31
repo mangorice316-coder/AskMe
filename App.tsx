@@ -50,6 +50,9 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
     const style = document.createElement('style');
     style.id = 'askme-global-styles';
     style.innerHTML = `
+      html {
+        scroll-behavior: smooth;
+      }
       html, body, #root {
         height: 100%;
         margin: 0;
@@ -59,6 +62,7 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         color: #FFFFFF;
+        overflow-x: hidden;
       }
       * {
         box-sizing: border-box;
@@ -82,54 +86,36 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
       ::-webkit-scrollbar-thumb:hover {
         background: #F47738;
       }
-      /* ================= ADVANCED SCROLL REVEAL & MICRO-INTERACTIONS ================= */
+      /* ================= SUBTLE, BUTTERY SMOOTH SCROLL REVEALS ================= */
       [data-testid="askme-reveal"], .askme-reveal {
         opacity: 0;
-        transform: translateY(24px);
-        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(14px);
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         will-change: opacity, transform;
       }
       [data-reveal="left"] {
-        transform: translateX(-32px) translateY(12px) !important;
+        transform: translateX(-16px) translateY(8px) !important;
       }
       [data-reveal="right"] {
-        transform: translateX(32px) translateY(12px) !important;
+        transform: translateX(16px) translateY(8px) !important;
       }
       [data-reveal="scale"] {
-        transform: scale(0.92) translateY(16px) !important;
+        transform: scale(0.96) translateY(8px) !important;
       }
       [data-testid="askme-reveal"].is-revealed, .askme-reveal.is-revealed {
         opacity: 1 !important;
         transform: translateY(0) translateX(0) scale(1) !important;
       }
 
-      /* Staggered cascade for sibling elements */
+      /* Gentle staggered cascade for sibling elements */
       .stagesPipeline > *:nth-child(1) { transition-delay: 0.04s; }
-      .stagesPipeline > *:nth-child(2) { transition-delay: 0.12s; }
-      .stagesPipeline > *:nth-child(3) { transition-delay: 0.20s; }
-      .stagesPipeline > *:nth-child(4) { transition-delay: 0.28s; }
-      .stagesPipeline > *:nth-child(5) { transition-delay: 0.36s; }
-      .bentoRow > *:nth-child(1) { transition-delay: 0.08s; }
-      .bentoRow > *:nth-child(2) { transition-delay: 0.18s; }
-      .bentoRow > *:nth-child(3) { transition-delay: 0.28s; }
-
-      @keyframes bounceCue {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(5px); }
-      }
-      .bounce-cue {
-        animation: bounceCue 1.6s ease-in-out infinite;
-      }
-
-      @keyframes liveLaserPulse {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 200% 50%; }
-      }
-      .laser-pulse {
-        background: linear-gradient(90deg, #F47738, #FF6652, #FFAA5C, #F47738);
-        background-size: 200% auto;
-        animation: liveLaserPulse 3s linear infinite;
-      }
+      .stagesPipeline > *:nth-child(2) { transition-delay: 0.10s; }
+      .stagesPipeline > *:nth-child(3) { transition-delay: 0.16s; }
+      .stagesPipeline > *:nth-child(4) { transition-delay: 0.22s; }
+      .stagesPipeline > *:nth-child(5) { transition-delay: 0.28s; }
+      .bentoRow > *:nth-child(1) { transition-delay: 0.06s; }
+      .bentoRow > *:nth-child(2) { transition-delay: 0.12s; }
+      .bentoRow > *:nth-child(3) { transition-delay: 0.18s; }
 
       @media (hover: hover) and (pointer: fine) {
         .primaryReportBtn:hover, .primaryCta:hover {
@@ -272,65 +258,45 @@ function AppContent() {
     historyRef.current = history;
   }, [history]);
 
-  // Subtle, elegant scroll fade reveal for web
+  // High-performance hardware-accelerated scroll reveal for web
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') return;
 
-    let observer: IntersectionObserver | null = null;
-
-    const setupObserver = () => {
-      if (observer) observer.disconnect();
-
-      observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-revealed');
-              observer?.unobserve(entry.target);
-            }
-          });
-        },
-        {
-          rootMargin: '0px 0px -30px 0px',
-          threshold: 0.08,
-        }
-      );
-
-      const targets = document.querySelectorAll(
-        '[data-testid="askme-reveal"], .askme-reveal'
-      );
-
-      targets.forEach((el) => {
-        if (!el.classList.contains('is-revealed')) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top < window.innerHeight && rect.bottom > 0) {
-            el.classList.add('is-revealed');
-          } else {
-            observer?.observe(el);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
           }
-        }
+        });
+      },
+      {
+        rootMargin: '0px 0px -20px 0px',
+        threshold: 0.05,
+      }
+    );
+
+    const observeTargets = () => {
+      const targets = document.querySelectorAll(
+        '[data-testid="askme-reveal"]:not(.is-revealed), .askme-reveal:not(.is-revealed)'
+      );
+      targets.forEach((el) => {
+        observer.observe(el);
       });
     };
 
-    const timer = setTimeout(setupObserver, 60);
+    const timer = setTimeout(observeTargets, 40);
 
     const mutationObs = new MutationObserver(() => {
-      setupObserver();
+      observeTargets();
     });
     mutationObs.observe(document.body, { childList: true, subtree: true });
 
-    const handleScroll = () => {
-      setupObserver();
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    document.addEventListener('scroll', handleScroll, { passive: true, capture: true });
-
     return () => {
       clearTimeout(timer);
-      observer?.disconnect();
+      observer.disconnect();
       mutationObs.disconnect();
-      window.removeEventListener('scroll', handleScroll);
-      document.removeEventListener('scroll', handleScroll, true);
     };
   }, [screen]);
 

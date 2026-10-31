@@ -20,7 +20,6 @@ import {
   Sparkles,
   ShieldCheck,
   CheckCircle2,
-  ChevronDown,
   ArrowUp,
 } from 'lucide-react-native';
 import { THEME } from '../theme/tokens';
@@ -36,17 +35,29 @@ interface LandingPageProps {
 
 export default function LandingPage({ onStartReport }: LandingPageProps) {
   const scrollRef = useRef<ScrollView>(null);
-  const [scrollY, setScrollY] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = event.nativeEvent.contentOffset.y;
-    setScrollY(y);
-    const contentH = event.nativeEvent.contentSize.height;
-    const layoutH = event.nativeEvent.layoutMeasurement.height;
-    const maxScroll = Math.max(1, contentH - layoutH);
-    const progress = Math.min(1, Math.max(0, y / maxScroll));
-    setScrollProgress(progress);
+
+    // Toggle back to top button with zero micro-render overhead
+    if (y > 400 && !showBackToTop) {
+      setShowBackToTop(true);
+    } else if (y <= 400 && showBackToTop) {
+      setShowBackToTop(false);
+    }
+
+    // Direct DOM progress bar update on web (zero React re-renders, 120fps fluid)
+    if (Platform.OS === 'web') {
+      const contentH = event.nativeEvent.contentSize.height;
+      const layoutH = event.nativeEvent.layoutMeasurement.height;
+      const maxScroll = Math.max(1, contentH - layoutH);
+      const progress = Math.min(100, Math.max(2, (y / maxScroll) * 100));
+      const el = document.getElementById('askme-scroll-progress-bar');
+      if (el) {
+        el.style.width = `${progress}%`;
+      }
+    }
   };
 
   const scrollToHowItWorks = () => {
@@ -64,18 +75,14 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
     onStartReport();
   };
 
-  // Parallax calculations
-  const heroParallax = Math.min(scrollY * 0.18, 60);
-
   return (
     <View style={styles.outerWrapper}>
       {/* 0. Top Laser Scroll Progress Bar */}
       <View style={styles.topProgressTrack}>
         <View
-          style={[
-            styles.topProgressBar,
-            { width: `${Math.max(2, scrollProgress * 100)}%` },
-          ]}
+          nativeID="askme-scroll-progress-bar"
+          style={styles.topProgressBar}
+          {...(Platform.OS === 'web' ? { id: 'askme-scroll-progress-bar' } as any : {})}
         />
       </View>
 
@@ -85,30 +92,16 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
-        scrollEventThrottle={16}
+        scrollEventThrottle={32}
       >
         {/* ================= 1. ULTRA CINEMATIC HERO SECTION ================= */}
         <View style={styles.heroSection}>
-          {/* Ambient Radial Glow Field with Scroll Parallax */}
-          <View
-            style={[
-              styles.heroAmbientGlow,
-              Platform.OS === 'web' && {
-                transform: `translateY(${heroParallax * 0.5}px)`,
-              } as any,
-            ]}
-          />
+          {/* Ambient Radial Glow Field */}
+          <View style={styles.heroAmbientGlow} />
 
           <View style={styles.heroGrid}>
             {/* Left Column: Headlines & Actions */}
-            <View
-              style={[
-                styles.heroLeftCol,
-                Platform.OS === 'web' && {
-                  transform: `translateY(${heroParallax * 0.25}px)`,
-                } as any,
-              ]}
-            >
+            <View style={styles.heroLeftCol}>
               {/* Live Civic Network Status Pill */}
               <View style={styles.heroStatusPill} testID="askme-reveal">
                 <View style={styles.livePulseDot} />
@@ -167,44 +160,17 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                 </View>
                 <View style={styles.trustDot} />
                 <View style={styles.trustItem}>
-                  <ShieldCheck size={13} color="#F47738" />
-                  <Text style={styles.trustItemText}>CPGRAMS & Swachhata Aligned</Text>
-                </View>
-                <View style={styles.trustDot} />
-                <View style={styles.trustItem}>
                   <Sparkles size={13} color="#FF6652" />
-                  <Text style={styles.trustItemText}>100% Free & Open</Text>
+                  <Text style={styles.trustItemText}>100% Free & Open-Source</Text>
                 </View>
               </View>
             </View>
 
             {/* Right Column: Signature 3D Civic Signal Core with Orbiting Telemetry */}
-            <View
-              style={[
-                styles.heroRightCol,
-                Platform.OS === 'web' && {
-                  transform: `translateY(${heroParallax * 0.15}px)`,
-                } as any,
-              ]}
-            >
+            <View style={styles.heroRightCol}>
               <HeroIllustration />
             </View>
           </View>
-
-          {/* Floating Scroll Cue in Hero */}
-          {scrollY < 60 && (
-            <TouchableOpacity
-              style={styles.scrollCuePill}
-              onPress={scrollToHowItWorks}
-              activeOpacity={0.8}
-              accessibilityLabel="Scroll down to explore features"
-            >
-              <Text style={styles.scrollCueText}>SCROLL TO EXPLORE</Text>
-              <View style={[styles.bounceIcon, Platform.OS === 'web' && ({ className: 'bounce-cue' } as any)]}>
-                <ChevronDown size={13} color="#F47738" />
-              </View>
-            </TouchableOpacity>
-          )}
 
           {/* Bottom Metrics Ticker Strip */}
           <View style={styles.statsStrip} testID="askme-reveal">
@@ -257,12 +223,8 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           {/* Dynamic Illuminated Circuit Track */}
           <View style={styles.circuitTrackWrapper}>
             <View
-              style={[
-                styles.circuitTrackFill,
-                {
-                  width: `${Math.min(100, Math.max(0, ((scrollY - 280) / 450) * 100))}%`,
-                },
-              ]}
+              style={styles.circuitTrackFill}
+              {...(Platform.OS === 'web' ? { className: 'laser-pulse' } as any : {})}
             />
           </View>
 
@@ -1247,39 +1209,6 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 14,
     backgroundColor: 'rgba(0, 0, 0, 0.24)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  scrollCuePill: {
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 24,
-    marginBottom: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: THEME.radii.pill,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.09)',
-    ...(Platform.OS === 'web'
-      ? {
-          cursor: 'pointer',
-          backdropFilter: 'blur(8px)',
-        }
-      : {}),
-  },
-  scrollCueText: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#A8A49D',
-    letterSpacing: 1.2,
-    fontFamily: THEME.fonts.mono,
-  },
-  bounceIcon: {
-    width: 18,
-    height: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
