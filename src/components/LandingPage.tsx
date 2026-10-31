@@ -108,7 +108,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
         </View>
 
         {/* Bottom Metrics Ticker Strip (concept2_landing_hero.jpg bottom row) */}
-        <View style={styles.statsStrip}>
+        <View style={styles.statsStrip} testID="askme-reveal">
           <View style={styles.statBox}>
             <Text style={styles.statNumber}>500K+</Text>
             <Text style={styles.statLabel}>Complaints Filed</Text>
@@ -139,7 +139,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
 
       {/* ================= 2. HOW ASKME WORKS (5 CONNECTED STAGES) ================= */}
       {/* Matches askme_full_concept_board_2.png bottom-left */}
-      <View style={styles.howItWorksSection} id="how-it-works">
+      <View style={styles.howItWorksSection} id="how-it-works" testID="askme-reveal">
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>
             How <Text style={{ color: '#F47738' }}>ASKME</Text> Works
@@ -151,7 +151,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
 
         <View style={styles.stagesPipeline}>
           {/* Step 1: Report */}
-          <View style={styles.stageCard}>
+          <View style={styles.stageCard} testID="askme-reveal">
             <View style={styles.stageIconBox}>
               <Camera size={18} color="#F47738" />
             </View>
@@ -166,7 +166,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           </View>
 
           {/* Step 2: Analyze */}
-          <View style={styles.stageCard}>
+          <View style={styles.stageCard} testID="askme-reveal">
             <View style={styles.stageIconBox}>
               <Sparkles size={18} color="#F47738" />
             </View>
@@ -181,7 +181,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           </View>
 
           {/* Step 3: Identify */}
-          <View style={styles.stageCard}>
+          <View style={styles.stageCard} testID="askme-reveal">
             <View style={styles.stageIconBox}>
               <Search size={18} color="#F47738" />
             </View>
@@ -196,7 +196,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           </View>
 
           {/* Step 4: Generate */}
-          <View style={styles.stageCard}>
+          <View style={styles.stageCard} testID="askme-reveal">
             <View style={styles.stageIconBox}>
               <FileText size={18} color="#F47738" />
             </View>
@@ -211,7 +211,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           </View>
 
           {/* Step 5: Send */}
-          <View style={styles.stageCard}>
+          <View style={styles.stageCard} testID="askme-reveal">
             <View style={styles.stageIconBox}>
               <Send size={18} color="#F47738" />
             </View>
@@ -225,7 +225,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
 
       {/* ================= 3. REPORT IT YOUR WAY (3-CARD BENTO) ================= */}
       {/* Matches concept2_reporting_method_cards.jpg */}
-      <View style={styles.reportYourWaySection} id="report-your-way">
+      <View style={styles.reportYourWaySection} id="report-your-way" testID="askme-reveal">
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>
             Report It <Text style={{ color: '#F47738' }}>Your Way</Text>
@@ -241,6 +241,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             style={styles.methodCard}
             onPress={handleStart}
             activeOpacity={0.85}
+            testID="askme-reveal"
           >
             <View style={styles.methodCardHeader}>
               <View style={styles.methodIconCircle}>
@@ -272,6 +273,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             style={styles.methodCard}
             onPress={handleStart}
             activeOpacity={0.85}
+            testID="askme-reveal"
           >
             <View style={styles.methodCardHeader}>
               <View style={[styles.methodIconCircle, styles.voiceActiveGlow]}>
@@ -310,6 +312,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             style={styles.methodCard}
             onPress={handleStart}
             activeOpacity={0.85}
+            testID="askme-reveal"
           >
             <View style={styles.methodCardHeader}>
               <View style={styles.methodIconCircle}>
@@ -340,7 +343,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
       </View>
 
       {/* ================= 4. CINEMATIC CLOSING BANNER ================= */}
-      <View style={styles.closingBanner}>
+      <View style={styles.closingBanner} testID="askme-reveal">
         <AskMeLogo size={60} showText={false} animated={true} />
         <Text style={styles.closingHeadline}>
           Your Voice Deserves to Be Heard.

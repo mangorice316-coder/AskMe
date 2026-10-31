@@ -82,6 +82,24 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
       ::-webkit-scrollbar-thumb:hover {
         background: #F47738;
       }
+      /* ================= SUBTLE SCROLL FADE ANIMATIONS ================= */
+      [data-testid="askme-reveal"], .askme-reveal {
+        opacity: 0;
+        transform: translateY(14px);
+        transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+      }
+      [data-testid="askme-reveal"].is-revealed, .askme-reveal.is-revealed {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        [data-testid="askme-reveal"], .askme-reveal {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+      }
     `;
     document.head.appendChild(style);
   }
@@ -208,6 +226,68 @@ function AppContent() {
   useEffect(() => {
     historyRef.current = history;
   }, [history]);
+
+  // Subtle, elegant scroll fade reveal for web
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') return;
+
+    let observer: IntersectionObserver | null = null;
+
+    const setupObserver = () => {
+      if (observer) observer.disconnect();
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-revealed');
+              observer?.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -30px 0px',
+          threshold: 0.08,
+        }
+      );
+
+      const targets = document.querySelectorAll(
+        '[data-testid="askme-reveal"], .askme-reveal'
+      );
+
+      targets.forEach((el) => {
+        if (!el.classList.contains('is-revealed')) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            el.classList.add('is-revealed');
+          } else {
+            observer?.observe(el);
+          }
+        }
+      });
+    };
+
+    const timer = setTimeout(setupObserver, 60);
+
+    const mutationObs = new MutationObserver(() => {
+      setupObserver();
+    });
+    mutationObs.observe(document.body, { childList: true, subtree: true });
+
+    const handleScroll = () => {
+      setupObserver();
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+
+    return () => {
+      clearTimeout(timer);
+      observer?.disconnect();
+      mutationObs.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('scroll', handleScroll, true);
+    };
+  }, [screen]);
 
   useEffect(() => {
     loadHistory();

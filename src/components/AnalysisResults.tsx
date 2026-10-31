@@ -276,7 +276,7 @@ export default function AnalysisResults({
 
       {/* ================= 1. RESPONSIBLE AUTHORITY VIEW ================= */}
       {/* Matches concept2_authority_identification.jpg */}
-      <View style={styles.sectionCard}>
+      <View style={styles.sectionCard} testID="askme-reveal">
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Responsible Authority</Text>
           <Text style={styles.sectionSubtitle}>
@@ -435,7 +435,7 @@ export default function AnalysisResults({
 
       {/* ================= 2. YOUR COMPLAINT LETTER (TACTILE DOCUMENT) ================= */}
       {/* Matches concept2_complaint_document.jpg */}
-      <View style={styles.sectionCard}>
+      <View style={styles.sectionCard} testID="askme-reveal">
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Your Complaint Letter</Text>
           <Text style={styles.sectionSubtitle}>

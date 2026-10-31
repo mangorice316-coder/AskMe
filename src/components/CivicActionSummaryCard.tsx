@@ -42,7 +42,7 @@ export default function CivicActionSummaryCard({
   };
 
   return (
-    <View style={styles.cardContainer}>
+    <View style={styles.cardContainer} testID="askme-reveal">
       {/* Header with Model Identifier & Status */}
       <View style={styles.headerRow}>
         <View style={styles.modelTag}>

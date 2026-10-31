@@ -11,9 +11,6 @@ import {
   Platform,
 } from 'react-native';
 import {
-  Camera,
-  Mic,
-  FileText,
   Sparkles,
   ArrowRight,
   Shield,
@@ -40,7 +37,6 @@ interface ReportingWorkspaceProps {
 
 export default function ReportingWorkspace({ onAnalyze, isAnalyzing }: ReportingWorkspaceProps) {
   // Input states
-  const [activeTab, setActiveTab] = useState<'all' | 'photo' | 'voice' | 'text'>('all');
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [voiceTranscript, setVoiceTranscript] = useState('');
   const [textDescription, setTextDescription] = useState('');
@@ -161,81 +157,41 @@ export default function ReportingWorkspace({ onAnalyze, isAnalyzing }: Reporting
         </View>
       </View>
 
-      {/* 2. Workspace Headline (Section 07) */}
-      <View style={styles.header}>
+      {/* 2. Workspace Headline */}
+      <View style={styles.header} testID="askme-reveal">
         <Text style={styles.headline}>What's happening in your area?</Text>
         <Text style={styles.description}>
-          Tell us about the problem. You can use a photo, voice, text, or all three.
+          Provide evidence through photo, voice, text, or any combination. All inputs are combined by AI into a single verified report.
         </Text>
       </View>
 
-      {/* Input Selection Filter Pills */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          style={[styles.tabBtn, activeTab === 'all' && styles.tabBtnActive]}
-          onPress={() => setActiveTab('all')}
-        >
-          <Sparkles size={13} color={activeTab === 'all' ? THEME.colors.brandOrange : THEME.colors.secondaryText} />
-          <Text style={[styles.tabText, activeTab === 'all' && styles.tabTextActive]}>
-            All Inputs (Combined)
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabBtn, activeTab === 'photo' && styles.tabBtnActive]}
-          onPress={() => setActiveTab('photo')}
-        >
-          <Camera size={13} color={activeTab === 'photo' ? THEME.colors.brandOrange : THEME.colors.secondaryText} />
-          <Text style={[styles.tabText, activeTab === 'photo' && styles.tabTextActive]}>Photo Only</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabBtn, activeTab === 'voice' && styles.tabBtnActive]}
-          onPress={() => setActiveTab('voice')}
-        >
-          <Mic size={13} color={activeTab === 'voice' ? THEME.colors.brandOrange : THEME.colors.secondaryText} />
-          <Text style={[styles.tabText, activeTab === 'voice' && styles.tabTextActive]}>Voice Only</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabBtn, activeTab === 'text' && styles.tabBtnActive]}
-          onPress={() => setActiveTab('text')}
-        >
-          <FileText size={13} color={activeTab === 'text' ? THEME.colors.brandOrange : THEME.colors.secondaryText} />
-          <Text style={[styles.tabText, activeTab === 'text' && styles.tabTextActive]}>Text Only</Text>
-        </TouchableOpacity>
+      {/* INPUT 1: Photo Reporting (Upload a Photo / Show us what happened) */}
+      <View style={styles.inputSection} testID="askme-reveal">
+        <PhotoUploader
+          photos={photos}
+          onPhotosChange={setPhotos}
+          onGpsDiscovered={handleExifGpsDiscovered}
+        />
       </View>
 
-      {/* INPUT 1: Photo Reporting (Upload a Photo / Show us what happened) */}
-      {(activeTab === 'all' || activeTab === 'photo') && (
-        <View style={styles.inputSection}>
-          <PhotoUploader
-            photos={photos}
-            onPhotosChange={setPhotos}
-            onGpsDiscovered={handleExifGpsDiscovered}
-          />
-        </View>
-      )}
-
       {/* INPUT 2: Voice Reporting (Tell Us by Voice / Explain the issue in your own words) */}
-      {(activeTab === 'all' || activeTab === 'voice') && (
-        <View style={styles.inputSection}>
-          <VoiceInput
-            transcript={voiceTranscript}
-            onTranscriptChange={setVoiceTranscript}
-          />
-        </View>
-      )}
+      <View style={styles.inputSection} testID="askme-reveal">
+        <VoiceInput
+          transcript={voiceTranscript}
+          onTranscriptChange={setVoiceTranscript}
+        />
+      </View>
 
       {/* INPUT 3: Text Reporting (Describe the Problem / Write a short explanation) */}
-      {(activeTab === 'all' || activeTab === 'text') && (
-        <View style={styles.inputSection}>
-          <TextInputCard
-            value={textDescription}
-            onChangeText={setTextDescription}
-          />
-        </View>
-      )}
+      <View style={styles.inputSection} testID="askme-reveal">
+        <TextInputCard
+          value={textDescription}
+          onChangeText={setTextDescription}
+        />
+      </View>
 
       {/* DEDICATED LOCATION SELECTOR */}
-      <View style={styles.inputSection}>
+      <View style={styles.inputSection} testID="askme-reveal">
         <LocationSelector
           problemAddress={problemAddress}
           problemCity={problemCity}
@@ -450,38 +406,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#A8A49D',
     lineHeight: 22,
-  },
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: '#161615',
-    padding: 5,
-    borderRadius: THEME.radii.pill,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    gap: 6,
-    flexWrap: 'wrap',
-  },
-  tabBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: THEME.radii.pill,
-  },
-  tabBtnActive: {
-    backgroundColor: 'rgba(244, 119, 56, 0.15)',
-    borderWidth: 1,
-    borderColor: '#F47738',
-  },
-  tabText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#8E8A83',
-  },
-  tabTextActive: {
-    color: '#F47738',
-    fontWeight: '800',
   },
   inputSection: {
     gap: 8,
