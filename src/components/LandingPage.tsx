@@ -51,13 +51,23 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
       showsVerticalScrollIndicator={false}
     >
       {/* ================= 1. ULTRA CINEMATIC HERO SECTION ================= */}
-      {/* Matches concept2_landing_hero.jpg exactly */}
       <View style={styles.heroSection}>
+        {/* Ambient Radial Glow Field */}
+        <View style={styles.heroAmbientGlow} />
+
         <View style={styles.heroGrid}>
           {/* Left Column: Headlines & Actions */}
           <View style={styles.heroLeftCol}>
+            {/* Live Civic Network Status Pill */}
+            <View style={styles.heroStatusPill} testID="askme-reveal">
+              <View style={styles.livePulseDot} />
+              <Text style={styles.heroStatusText}>AI-POWERED CIVIC ACTION PLATFORM</Text>
+              <View style={styles.statusDivider} />
+              <Text style={styles.heroStatusLive}>19+ JURISDICTIONS LIVE</Text>
+            </View>
+
             {/* Display Headline */}
-            <Text style={styles.heroHeadline}>
+            <Text style={styles.heroHeadline} testID="askme-reveal">
               Your City{'\n'}
               Has a Problem.{'\n'}
               Let's Make It{'\n'}
@@ -65,13 +75,12 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             </Text>
 
             {/* Concise Supporting Subtitle */}
-            <Text style={styles.heroSubtext}>
-              One photo, one voice, or one simple description. Let ASKME help you
-              reach the right authority.
+            <Text style={styles.heroSubtext} testID="askme-reveal">
+              One photo, one voice, or one simple description. AskMe automatically resolves the exact statutory municipal jurisdiction and drafts an enforceable petition with legal citations in seconds.
             </Text>
 
             {/* Call to Actions */}
-            <View style={styles.heroCtaRow}>
+            <View style={styles.heroCtaRow} testID="askme-reveal">
               <TouchableOpacity
                 style={styles.primaryReportBtn}
                 onPress={handleStart}
@@ -80,7 +89,9 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                 activeOpacity={0.88}
               >
                 <Text style={styles.primaryReportBtnText}>Report a Problem</Text>
-                <ArrowRight size={15} color="#FFFFFF" strokeWidth={2.5} />
+                <View style={styles.primaryArrowCircle}>
+                  <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.8} />
+                </View>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -97,8 +108,23 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
               </TouchableOpacity>
             </View>
 
-            {/* Citizen Trust Accreditation */}
-            <Text style={styles.trustIntro}>Trusted by citizens. Powered by AI.</Text>
+            {/* Citizen Trust Accreditation Badges */}
+            <View style={styles.trustBadgeRow} testID="askme-reveal">
+              <View style={styles.trustItem}>
+                <CheckCircle2 size={13} color="#22C55E" />
+                <Text style={styles.trustItemText}>Statutory Verification</Text>
+              </View>
+              <View style={styles.trustDot} />
+              <View style={styles.trustItem}>
+                <ShieldCheck size={13} color="#F47738" />
+                <Text style={styles.trustItemText}>CPGRAMS & Swachhata Aligned</Text>
+              </View>
+              <View style={styles.trustDot} />
+              <View style={styles.trustItem}>
+                <Sparkles size={13} color="#FF6652" />
+                <Text style={styles.trustItemText}>100% Free & Open</Text>
+              </View>
+            </View>
           </View>
 
           {/* Right Column: Signature 3D Civic Signal Core with Orbiting Telemetry */}
@@ -107,11 +133,12 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           </View>
         </View>
 
-        {/* Bottom Metrics Ticker Strip (concept2_landing_hero.jpg bottom row) */}
+        {/* Bottom Metrics Ticker Strip */}
         <View style={styles.statsStrip} testID="askme-reveal">
           <View style={styles.statBox}>
             <Text style={styles.statNumber}>500K+</Text>
             <Text style={styles.statLabel}>Complaints Filed</Text>
+            <Text style={styles.statMicro}>Citizen grievances resolved</Text>
           </View>
 
           <View style={styles.statDivider} />
@@ -119,6 +146,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           <View style={styles.statBox}>
             <Text style={styles.statNumber}>200+</Text>
             <Text style={styles.statLabel}>Cities Covered</Text>
+            <Text style={styles.statMicro}>Pan-India municipal coverage</Text>
           </View>
 
           <View style={styles.statDivider} />
@@ -126,21 +154,25 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           <View style={styles.statBox}>
             <Text style={styles.statNumber}>95%</Text>
             <Text style={styles.statLabel}>Resolution Rate</Text>
+            <Text style={styles.statMicro}>Statutory jurisdiction match</Text>
           </View>
 
           <View style={styles.statDivider} />
 
           <View style={styles.statBox}>
-            <Text style={styles.statNumber}>24x7</Text>
+            <Text style={styles.statNumber}>24×7</Text>
             <Text style={styles.statLabel}>AI Assistance</Text>
+            <Text style={styles.statMicro}>On-device & edge reasoning</Text>
           </View>
         </View>
       </View>
 
       {/* ================= 2. HOW ASKME WORKS (5 CONNECTED STAGES) ================= */}
-      {/* Matches askme_full_concept_board_2.png bottom-left */}
       <View style={styles.howItWorksSection} id="how-it-works" testID="askme-reveal">
         <View style={styles.sectionHeader}>
+          <View style={styles.sectionEyebrowBadge}>
+            <Text style={styles.sectionEyebrowText}>STATUTORY ROUTING PIPELINE</Text>
+          </View>
           <Text style={styles.sectionTitle}>
             How <Text style={{ color: '#F47738' }}>ASKME</Text> Works
           </Text>
@@ -152,86 +184,108 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
         <View style={styles.stagesPipeline}>
           {/* Step 1: Report */}
           <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageIconBox}>
-              <Camera size={18} color="#F47738" />
+            <View style={styles.stageHeaderRow}>
+              <View style={styles.stageIconBox}>
+                <Camera size={17} color="#F47738" />
+              </View>
+              <Text style={styles.stageStepNumber}>01</Text>
             </View>
             <Text style={styles.stageTitle}>Report</Text>
             <Text style={styles.stageDesc}>
-              Share the problem via photo, voice, or text description.
+              Capture photo evidence with EXIF GPS, speak in any Indian language, or write a short note.
             </Text>
+            <View style={styles.stageAccentBar} />
           </View>
 
           <View style={styles.pipelineArrow}>
-            <ArrowRight size={14} color="#77736E" />
+            <ArrowRight size={13} color="#5C5852" />
           </View>
 
           {/* Step 2: Analyze */}
           <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageIconBox}>
-              <Sparkles size={18} color="#F47738" />
+            <View style={styles.stageHeaderRow}>
+              <View style={styles.stageIconBox}>
+                <Sparkles size={17} color="#F47738" />
+              </View>
+              <Text style={styles.stageStepNumber}>02</Text>
             </View>
             <Text style={styles.stageTitle}>Analyze</Text>
             <Text style={styles.stageDesc}>
-              AI analyzes and classifies severity and hazard impact.
+              Multimodal AI separates observed visual evidence from citizen facts and evaluates civic hazard severity.
             </Text>
+            <View style={styles.stageAccentBar} />
           </View>
 
           <View style={styles.pipelineArrow}>
-            <ArrowRight size={14} color="#77736E" />
+            <ArrowRight size={13} color="#5C5852" />
           </View>
 
           {/* Step 3: Identify */}
           <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageIconBox}>
-              <Search size={18} color="#F47738" />
+            <View style={styles.stageHeaderRow}>
+              <View style={styles.stageIconBox}>
+                <Search size={17} color="#F47738" />
+              </View>
+              <Text style={styles.stageStepNumber}>03</Text>
             </View>
             <Text style={styles.stageTitle}>Identify</Text>
             <Text style={styles.stageDesc}>
-              We find the exact statutory authority with real jurisdiction.
+              Matches exact municipal ward, zonal engineer, or national highway division with 100% boundary accuracy.
             </Text>
+            <View style={styles.stageAccentBar} />
           </View>
 
           <View style={styles.pipelineArrow}>
-            <ArrowRight size={14} color="#77736E" />
+            <ArrowRight size={13} color="#5C5852" />
           </View>
 
           {/* Step 4: Generate */}
           <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageIconBox}>
-              <FileText size={18} color="#F47738" />
+            <View style={styles.stageHeaderRow}>
+              <View style={styles.stageIconBox}>
+                <FileText size={17} color="#F47738" />
+              </View>
+              <Text style={styles.stageStepNumber}>04</Text>
             </View>
             <Text style={styles.stageTitle}>Generate</Text>
             <Text style={styles.stageDesc}>
-              We draft a formal grievance letter with legal citations.
+              Drafts a formal, legally enforceable grievance petition citing specific municipal acts and Article 21.
             </Text>
+            <View style={styles.stageAccentBar} />
           </View>
 
           <View style={styles.pipelineArrow}>
-            <ArrowRight size={14} color="#77736E" />
+            <ArrowRight size={13} color="#5C5852" />
           </View>
 
           {/* Step 5: Send */}
           <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageIconBox}>
-              <Send size={18} color="#F47738" />
+            <View style={styles.stageHeaderRow}>
+              <View style={styles.stageIconBox}>
+                <Send size={17} color="#F47738" />
+              </View>
+              <Text style={styles.stageStepNumber}>05</Text>
             </View>
-            <Text style={styles.stageTitle}>Send</Text>
+            <Text style={styles.stageTitle}>Dispatch</Text>
             <Text style={styles.stageDesc}>
-              Submit to official portals (CPGRAMS, Swachhata, BBMP, NHAI).
+              Transparent submission directly to verified portals (CPGRAMS, Swachhata, BBMP, GCC, or NHAI).
             </Text>
+            <View style={styles.stageAccentBar} />
           </View>
         </View>
       </View>
 
       {/* ================= 3. REPORT IT YOUR WAY (3-CARD BENTO) ================= */}
-      {/* Matches concept2_reporting_method_cards.jpg */}
       <View style={styles.reportYourWaySection} id="report-your-way" testID="askme-reveal">
         <View style={styles.sectionHeader}>
+          <View style={styles.sectionEyebrowBadge}>
+            <Text style={styles.sectionEyebrowText}>MULTIMODAL EVIDENCE ENGINE</Text>
+          </View>
           <Text style={styles.sectionTitle}>
             Report It <Text style={{ color: '#F47738' }}>Your Way</Text>
           </Text>
           <Text style={styles.sectionSubtitle}>
-            Your voice. Your choice. Your impact. Choose how you want to document the issue.
+            Every citizen expresses differently. Upload a photo, speak in your language, or type what happened.
           </Text>
         </View>
 
@@ -240,30 +294,36 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           <TouchableOpacity
             style={styles.methodCard}
             onPress={handleStart}
-            activeOpacity={0.85}
+            activeOpacity={0.88}
             testID="askme-reveal"
           >
-            <View style={styles.methodCardHeader}>
-              <View style={styles.methodIconCircle}>
-                <Camera size={18} color="#FFFFFF" />
+            <View>
+              <View style={styles.methodCardHeader}>
+                <View style={styles.methodIconCircle}>
+                  <Camera size={19} color="#FFFFFF" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.methodCardTitle}>Photo Evidence</Text>
+                  <Text style={styles.methodCardSub}>Visual inspection & EXIF location</Text>
+                </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.methodCardTitle}>Photo</Text>
-                <Text style={styles.methodCardSub}>Capture or upload a photo</Text>
-              </View>
-            </View>
 
-            <View style={styles.methodPreviewArea}>
-              <View style={styles.mockViewfinder}>
-                <View style={styles.crosshair} />
-                <Text style={styles.mockViewfinderText}>EXIF GPS AUTO-DETECTION</Text>
+              <View style={styles.methodPreviewArea}>
+                <View style={styles.mockViewfinder}>
+                  <View style={styles.viewfinderCornerTL} />
+                  <View style={styles.viewfinderCornerTR} />
+                  <View style={styles.viewfinderCornerBL} />
+                  <View style={styles.viewfinderCornerBR} />
+                  <View style={styles.crosshair} />
+                  <Text style={styles.mockViewfinderText}>EXIF GPS AUTO-DETECTION</Text>
+                </View>
               </View>
             </View>
 
             <View style={styles.cardFooterAction}>
               <Text style={styles.cardActionLabel}>Upload Evidence</Text>
               <View style={styles.circleActionArrow}>
-                <ArrowRight size={12} color="#FFFFFF" />
+                <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
               </View>
             </View>
           </TouchableOpacity>
@@ -272,37 +332,42 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           <TouchableOpacity
             style={styles.methodCard}
             onPress={handleStart}
-            activeOpacity={0.85}
+            activeOpacity={0.88}
             testID="askme-reveal"
           >
-            <View style={styles.methodCardHeader}>
-              <View style={[styles.methodIconCircle, styles.voiceActiveGlow]}>
-                <Mic size={18} color="#F47738" />
+            <View>
+              <View style={styles.methodCardHeader}>
+                <View style={[styles.methodIconCircle, styles.voiceActiveGlow]}>
+                  <Mic size={19} color="#F47738" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.methodCardTitle}>Acoustic Voice</Text>
+                  <Text style={styles.methodCardSub}>Speak in your mother tongue</Text>
+                </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.methodCardTitle}>Voice</Text>
-                <Text style={styles.methodCardSub}>Record your complaint</Text>
-              </View>
-            </View>
 
-            <View style={styles.methodPreviewArea}>
-              <View style={styles.mockWaveform}>
-                {[12, 28, 42, 18, 36, 48, 22, 38, 14, 30].map((h, i) => (
-                  <View
-                    key={i}
-                    style={[
-                      styles.waveBar,
-                      { height: h, backgroundColor: i % 2 === 0 ? '#F47738' : '#FF8C42' },
-                    ]}
-                  />
-                ))}
+              <View style={styles.methodPreviewArea}>
+                <View style={styles.mockWaveform}>
+                  {[10, 24, 38, 16, 32, 46, 20, 36, 14, 28, 42, 18, 30].map((h, i) => (
+                    <View
+                      key={i}
+                      style={[
+                        styles.waveBar,
+                        { height: h, backgroundColor: i % 2 === 0 ? '#F47738' : '#FF7A45' },
+                      ]}
+                    />
+                  ))}
+                </View>
+                <Text style={styles.waveformLanguageBadge}>
+                  Tamil • Hindi • English • Telugu • Kannada
+                </Text>
               </View>
             </View>
 
             <View style={styles.cardFooterAction}>
               <Text style={styles.cardActionLabel}>Speak in Native Language</Text>
               <View style={styles.circleActionArrow}>
-                <ArrowRight size={12} color="#FFFFFF" />
+                <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
               </View>
             </View>
           </TouchableOpacity>
@@ -311,31 +376,36 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           <TouchableOpacity
             style={styles.methodCard}
             onPress={handleStart}
-            activeOpacity={0.85}
+            activeOpacity={0.88}
             testID="askme-reveal"
           >
-            <View style={styles.methodCardHeader}>
-              <View style={styles.methodIconCircle}>
-                <FileText size={18} color="#FFFFFF" />
+            <View>
+              <View style={styles.methodCardHeader}>
+                <View style={styles.methodIconCircle}>
+                  <FileText size={19} color="#FFFFFF" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.methodCardTitle}>Text Summary</Text>
+                  <Text style={styles.methodCardSub}>Describe in your own words</Text>
+                </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.methodCardTitle}>Text</Text>
-                <Text style={styles.methodCardSub}>Type your problem</Text>
-              </View>
-            </View>
 
-            <View style={styles.methodPreviewArea}>
-              <View style={styles.mockNote}>
-                <Text style={styles.mockNoteText}>
-                  "Street lights not working in our area for the past week, creating serious public safety risks..."
-                </Text>
+              <View style={styles.methodPreviewArea}>
+                <View style={styles.mockNote}>
+                  <Text style={styles.mockNoteText}>
+                    "Severe waterlogging and open manhole near Main Road intersection creating hazardous pedestrian conditions..."
+                  </Text>
+                  <View style={styles.mockNoteBadge}>
+                    <Text style={styles.mockNoteBadgeText}>STATUTORY GROUNDING</Text>
+                  </View>
+                </View>
               </View>
             </View>
 
             <View style={styles.cardFooterAction}>
               <Text style={styles.cardActionLabel}>Write Short Note</Text>
               <View style={styles.circleActionArrow}>
-                <ArrowRight size={12} color="#FFFFFF" />
+                <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
               </View>
             </View>
           </TouchableOpacity>
@@ -344,13 +414,13 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
 
       {/* ================= 4. CINEMATIC CLOSING BANNER ================= */}
       <View style={styles.closingBanner} testID="askme-reveal">
-        <AskMeLogo size={60} showText={false} animated={true} />
+        <View style={styles.closingAmbientGlow} />
+        <AskMeLogo size={64} showText={false} animated={true} />
         <Text style={styles.closingHeadline}>
           Your Voice Deserves to Be Heard.
         </Text>
         <Text style={styles.closingSubtext}>
-          Join thousands of active citizens transforming civic problems into legally
-          sound petitions submitted directly to verified authorities.
+          Join thousands of active citizens transforming civic problems into legally sound petitions submitted directly to verified authorities across India.
         </Text>
         <TouchableOpacity
           style={styles.closingCta}
@@ -360,7 +430,9 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           activeOpacity={0.88}
         >
           <Text style={styles.closingCtaText}>Start Your Complaint</Text>
-          <ArrowRight size={16} color="#FFFFFF" strokeWidth={2.5} />
+          <View style={styles.closingArrowCircle}>
+            <ArrowRight size={15} color="#FFFFFF" strokeWidth={2.6} />
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -385,28 +457,89 @@ const styles = StyleSheet.create({
   heroSection: {
     paddingHorizontal: 24,
     paddingTop: 36,
-    paddingBottom: 44,
-    maxWidth: 1180,
+    paddingBottom: 48,
+    maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
+    position: 'relative',
+  },
+  heroAmbientGlow: {
+    position: 'absolute',
+    top: -40,
+    left: '10%',
+    width: 600,
+    height: 480,
+    borderRadius: 300,
+    backgroundColor: 'rgba(244, 119, 56, 0.08)',
+    ...(Platform.OS === 'web'
+      ? {
+          filter: 'blur(90px)',
+          pointerEvents: 'none',
+        }
+      : {}),
   },
   heroGrid: {
     flexDirection: Platform.OS === 'web' ? 'row' : 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 32,
+    gap: 36,
+    position: 'relative',
+    zIndex: 2,
   },
   heroLeftCol: {
     flex: 1,
-    maxWidth: 560,
+    maxWidth: 580,
     zIndex: 2,
   },
+  heroStatusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: THEME.radii.pill,
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    marginBottom: 22,
+    ...(Platform.OS === 'web'
+      ? {
+          backdropFilter: 'blur(12px)',
+        }
+      : {}),
+  },
+  livePulseDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: '#22C55E',
+  },
+  heroStatusText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#E8E5DF',
+    letterSpacing: 0.8,
+    fontFamily: THEME.fonts.mono,
+  },
+  statusDivider: {
+    width: 1,
+    height: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  heroStatusLive: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#F47738',
+    letterSpacing: 0.6,
+    fontFamily: THEME.fonts.mono,
+  },
   heroHeadline: {
-    fontSize: Platform.OS === 'web' ? 52 : 36,
+    fontSize: Platform.OS === 'web' ? 56 : 38,
     fontWeight: '900',
     color: '#FFFFFF',
-    lineHeight: Platform.OS === 'web' ? 58 : 42,
-    letterSpacing: -1.2,
+    lineHeight: Platform.OS === 'web' ? 62 : 44,
+    letterSpacing: -1.6,
     marginBottom: 20,
     fontFamily: Platform.OS === 'web' ? 'Sora, Space Grotesk, sans-serif' : undefined,
   },
@@ -416,31 +549,38 @@ const styles = StyleSheet.create({
   heroSubtext: {
     fontSize: 16,
     color: '#A8A49D',
-    lineHeight: 26,
+    lineHeight: 27,
     marginBottom: 32,
-    maxWidth: 480,
+    maxWidth: 500,
     fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
   },
   heroCtaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    marginBottom: 32,
+    marginBottom: 30,
     flexWrap: 'wrap',
   },
   primaryReportBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
     backgroundColor: '#F47738',
     paddingVertical: 14,
-    paddingHorizontal: 26,
+    paddingLeft: 26,
+    paddingRight: 14,
     borderRadius: THEME.radii.pill,
     shadowColor: '#F47738',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.45,
-    shadowRadius: 18,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 8,
+    ...(Platform.OS === 'web'
+      ? {
+          transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+          cursor: 'pointer',
+        }
+      : {}),
   },
   primaryReportBtnText: {
     fontSize: 14,
@@ -449,16 +589,30 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
   },
+  primaryArrowCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: 'rgba(0, 0, 0, 0.24)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   discoverBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     paddingVertical: 13,
     paddingHorizontal: 22,
     borderRadius: THEME.radii.pill,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.12)',
+    ...(Platform.OS === 'web'
+      ? {
+          transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+          cursor: 'pointer',
+        }
+      : {}),
   },
   discoverBtnText: {
     fontSize: 14,
@@ -467,68 +621,99 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
   },
   playIconCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  trustIntro: {
+  trustBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  trustItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  trustItemText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#77736E',
-    letterSpacing: 0.4,
-    fontFamily: THEME.fonts.mono,
+    color: '#8E8A83',
+    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+  },
+  trustDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: '#3E3C38',
   },
   heroRightCol: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     minWidth: 320,
+    position: 'relative',
+    zIndex: 2,
   },
   statsStrip: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    gap: 20,
-    marginTop: 40,
-    paddingVertical: 20,
+    gap: 16,
+    marginTop: 48,
+    paddingVertical: 22,
     paddingHorizontal: 28,
-    backgroundColor: 'rgba(26, 26, 24, 0.65)',
-    borderRadius: 20,
+    backgroundColor: 'rgba(18, 18, 17, 0.85)',
+    borderRadius: 22,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
+    ...(Platform.OS === 'web'
+      ? {
+          backdropFilter: 'blur(20px)',
+          boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.7)',
+        }
+      : {}),
   },
   statBox: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flex: 1,
-    minWidth: 110,
+    minWidth: 120,
   },
   statNumber: {
-    fontSize: 26,
+    fontSize: 30,
     fontWeight: '900',
     color: '#FFFFFF',
-    letterSpacing: -0.5,
+    letterSpacing: -0.8,
     fontFamily: Platform.OS === 'web' ? 'Sora, sans-serif' : undefined,
   },
   statLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#A8A49D',
-    marginTop: 3,
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#E8E5DF',
+    marginTop: 2,
     fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+  },
+  statMicro: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#77736E',
+    marginTop: 2,
+    fontFamily: THEME.fonts.mono,
   },
   statDivider: {
     width: 1,
-    height: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   howItWorksSection: {
     paddingHorizontal: 24,
-    paddingVertical: 64,
-    maxWidth: 1180,
+    paddingVertical: 72,
+    maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
     borderTopWidth: 1,
@@ -537,39 +722,70 @@ const styles = StyleSheet.create({
   sectionHeader: {
     alignItems: 'center',
     textAlign: 'center',
-    marginBottom: 44,
+    marginBottom: 48,
+  },
+  sectionEyebrowBadge: {
+    backgroundColor: 'rgba(244, 119, 56, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(244, 119, 56, 0.28)',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: THEME.radii.pill,
+    marginBottom: 14,
+  },
+  sectionEyebrowText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#F47738',
+    letterSpacing: 1,
+    fontFamily: THEME.fonts.mono,
   },
   sectionTitle: {
-    fontSize: 32,
+    fontSize: Platform.OS === 'web' ? 36 : 28,
     fontWeight: '900',
     color: '#FFFFFF',
-    letterSpacing: -0.8,
-    marginBottom: 10,
+    letterSpacing: -1,
+    marginBottom: 12,
     fontFamily: Platform.OS === 'web' ? 'Sora, sans-serif' : undefined,
   },
   sectionSubtitle: {
     fontSize: 15,
     color: '#A8A49D',
     textAlign: 'center',
-    maxWidth: 580,
-    lineHeight: 23,
+    maxWidth: 620,
+    lineHeight: 24,
     fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
   },
   stagesPipeline: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     gap: 12,
   },
   stageCard: {
     flex: 1,
-    minWidth: 170,
-    backgroundColor: 'rgba(26, 26, 24, 0.7)',
-    borderRadius: 16,
+    minWidth: 180,
+    backgroundColor: 'rgba(20, 20, 18, 0.85)',
+    borderRadius: 18,
     padding: 20,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
+    position: 'relative',
+    overflow: 'hidden',
+    justifyContent: 'space-between',
+    ...(Platform.OS === 'web'
+      ? {
+          transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+          boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.5)',
+        }
+      : {}),
+  },
+  stageHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
   },
   stageIconBox: {
     width: 38,
@@ -580,7 +796,13 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(244, 119, 56, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
+  },
+  stageStepNumber: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#F47738',
+    fontFamily: THEME.fonts.mono,
+    letterSpacing: 0.5,
   },
   stageTitle: {
     fontSize: 16,
@@ -594,6 +816,13 @@ const styles = StyleSheet.create({
     color: '#8E8A83',
     lineHeight: 18,
     fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    marginBottom: 14,
+  },
+  stageAccentBar: {
+    height: 2,
+    width: 24,
+    backgroundColor: 'rgba(244, 119, 56, 0.4)',
+    borderRadius: 1,
   },
   pipelineArrow: {
     alignItems: 'center',
@@ -602,8 +831,8 @@ const styles = StyleSheet.create({
   },
   reportYourWaySection: {
     paddingHorizontal: 24,
-    paddingVertical: 64,
-    maxWidth: 1180,
+    paddingVertical: 72,
+    maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
     borderTopWidth: 1,
@@ -611,36 +840,45 @@ const styles = StyleSheet.create({
   },
   bentoRow: {
     flexDirection: Platform.OS === 'web' ? 'row' : 'column',
-    gap: 20,
+    gap: 22,
   },
   methodCard: {
     flex: 1,
-    backgroundColor: 'rgba(26, 26, 24, 0.7)',
-    borderRadius: 20,
+    backgroundColor: 'rgba(20, 20, 18, 0.85)',
+    borderRadius: 22,
     padding: 24,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
     justifyContent: 'space-between',
-    minHeight: 280,
+    minHeight: 310,
+    position: 'relative',
+    overflow: 'hidden',
+    ...(Platform.OS === 'web'
+      ? {
+          transition: 'all 0.24s cubic-bezier(0.16, 1, 0.3, 1)',
+          cursor: 'pointer',
+          boxShadow: '0 12px 32px -6px rgba(0, 0, 0, 0.6)',
+        }
+      : {}),
   },
   methodCardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    marginBottom: 20,
+    marginBottom: 18,
   },
   methodIconCircle: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(255, 255, 255, 0.07)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   voiceActiveGlow: {
-    backgroundColor: 'rgba(244, 119, 56, 0.15)',
+    backgroundColor: 'rgba(244, 119, 56, 0.14)',
     borderColor: 'rgba(244, 119, 56, 0.4)',
   },
   methodCardTitle: {
@@ -653,27 +891,71 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#8E8A83',
     marginTop: 2,
+    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
   },
   methodPreviewArea: {
-    height: 100,
-    backgroundColor: '#121211',
-    borderRadius: 12,
+    minHeight: 110,
+    backgroundColor: '#121210',
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.06)',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 12,
+    padding: 14,
     marginBottom: 20,
+    position: 'relative',
   },
   mockViewfinder: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     height: '100%',
+    position: 'relative',
+    paddingVertical: 12,
+  },
+  viewfinderCornerTL: {
+    position: 'absolute',
+    top: 0,
+    left: 4,
+    width: 8,
+    height: 8,
+    borderTopWidth: 2,
+    borderLeftWidth: 2,
+    borderColor: '#F47738',
+  },
+  viewfinderCornerTR: {
+    position: 'absolute',
+    top: 0,
+    right: 4,
+    width: 8,
+    height: 8,
+    borderTopWidth: 2,
+    borderRightWidth: 2,
+    borderColor: '#F47738',
+  },
+  viewfinderCornerBL: {
+    position: 'absolute',
+    bottom: 0,
+    left: 4,
+    width: 8,
+    height: 8,
+    borderBottomWidth: 2,
+    borderLeftWidth: 2,
+    borderColor: '#F47738',
+  },
+  viewfinderCornerBR: {
+    position: 'absolute',
+    bottom: 0,
+    right: 4,
+    width: 8,
+    height: 8,
+    borderBottomWidth: 2,
+    borderRightWidth: 2,
+    borderColor: '#F47738',
   },
   crosshair: {
-    width: 24,
-    height: 24,
+    width: 22,
+    height: 22,
     borderWidth: 1.5,
     borderColor: '#F47738',
     borderRadius: 4,
@@ -689,22 +971,44 @@ const styles = StyleSheet.create({
   mockWaveform: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    height: '100%',
+    gap: 5,
+    height: 48,
+    marginBottom: 8,
   },
   waveBar: {
     width: 4,
     borderRadius: 2,
+  },
+  waveformLanguageBadge: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#8E8A83',
+    fontFamily: THEME.fonts.mono,
   },
   mockNote: {
     width: '100%',
     justifyContent: 'center',
   },
   mockNoteText: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#A8A49D',
-    lineHeight: 16,
+    lineHeight: 18,
     fontStyle: 'italic',
+    marginBottom: 8,
+  },
+  mockNoteBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  mockNoteBadgeText: {
+    fontSize: 8.5,
+    fontWeight: '800',
+    color: '#F47738',
+    fontFamily: THEME.fonts.mono,
+    letterSpacing: 0.8,
   },
   cardFooterAction: {
     flexDirection: 'row',
@@ -712,70 +1016,109 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.06)',
-    paddingTop: 14,
+    paddingTop: 16,
   },
   cardActionLabel: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
     color: '#FFFFFF',
   },
   circleActionArrow: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   closingBanner: {
     marginHorizontal: 24,
-    marginVertical: 48,
-    padding: 48,
-    borderRadius: 28,
-    backgroundColor: '#161615',
+    marginVertical: 56,
+    padding: 56,
+    borderRadius: 32,
+    backgroundColor: 'rgba(20, 20, 18, 0.92)',
     borderWidth: 1,
-    borderColor: 'rgba(244, 119, 56, 0.25)',
+    borderColor: 'rgba(244, 119, 56, 0.28)',
     alignItems: 'center',
     textAlign: 'center',
-    maxWidth: 1000,
+    maxWidth: 1060,
     width: '92%',
     alignSelf: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+    ...(Platform.OS === 'web'
+      ? {
+          backdropFilter: 'blur(24px)',
+          boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(244, 119, 56, 0.08)',
+        }
+      : {}),
+  },
+  closingAmbientGlow: {
+    position: 'absolute',
+    top: -60,
+    width: 500,
+    height: 300,
+    borderRadius: 200,
+    backgroundColor: 'rgba(244, 119, 56, 0.12)',
+    ...(Platform.OS === 'web'
+      ? {
+          filter: 'blur(90px)',
+          pointerEvents: 'none',
+        }
+      : {}),
   },
   closingHeadline: {
-    fontSize: 32,
+    fontSize: Platform.OS === 'web' ? 36 : 28,
     fontWeight: '900',
     color: '#FFFFFF',
-    marginTop: 20,
-    marginBottom: 12,
+    marginTop: 24,
+    marginBottom: 14,
     textAlign: 'center',
-    letterSpacing: -0.6,
+    letterSpacing: -0.8,
     fontFamily: Platform.OS === 'web' ? 'Sora, sans-serif' : undefined,
   },
   closingSubtext: {
     fontSize: 15,
     color: '#A8A49D',
     textAlign: 'center',
-    maxWidth: 580,
-    lineHeight: 24,
-    marginBottom: 32,
+    maxWidth: 620,
+    lineHeight: 25,
+    marginBottom: 36,
+    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
   },
   closingCta: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
     backgroundColor: '#F47738',
     paddingVertical: 15,
-    paddingHorizontal: 32,
+    paddingLeft: 30,
+    paddingRight: 16,
     borderRadius: THEME.radii.pill,
     shadowColor: '#F47738',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 18,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 8,
+    ...(Platform.OS === 'web'
+      ? {
+          transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+          cursor: 'pointer',
+        }
+      : {}),
   },
   closingCtaText: {
     fontSize: 15,
     fontWeight: '800',
     color: '#FFFFFF',
+    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+  },
+  closingArrowCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(0, 0, 0, 0.24)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
