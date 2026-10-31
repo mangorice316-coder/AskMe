@@ -206,7 +206,7 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         background: rgba(255, 255, 255, 0.3);
       }
 
-      /* Sellix Video Viewport */
+      /* Sellix Video Viewport & Interactive Background */
       .video-viewport {
         position: absolute;
         inset: 0;
@@ -216,6 +216,15 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         z-index: 0;
         pointer-events: none;
       }
+      .video-parallax-wrapper {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        will-change: transform;
+        transform: translate3d(0, 0, 0);
+      }
       .video-layer {
         position: absolute;
         top: 50%;
@@ -224,7 +233,7 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         min-height: 100%;
         width: auto;
         height: auto;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) scale(1.06);
         object-fit: cover;
         opacity: 0;
         transition: opacity 1.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -233,10 +242,32 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
       .video-layer.active {
         opacity: 1;
       }
+      .interactive-bg-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .interactive-cursor-glow {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        will-change: background, opacity;
+      }
+      .interactive-cursor-glow.active {
+        opacity: 1;
+      }
       .video-vignette {
         position: absolute;
         inset: 0;
-        z-index: 1;
+        z-index: 3;
         pointer-events: none;
         background-image:
           radial-gradient(circle at center, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.92) 100%),

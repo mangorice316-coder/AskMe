@@ -144,7 +144,7 @@
       -webkit-user-select: none;
     }
 
-    /* ================= 1. BACKGROUND VIDEO (EXACT EARTH ANIMATION) ================= */
+    /* ================= 1. BACKGROUND VIDEO & INTERACTIVE SYSTEM ================= */
     .video-viewport {
       position: absolute;
       inset: 0;
@@ -155,6 +155,16 @@
       pointer-events: none;
     }
 
+    .video-parallax-wrapper {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+    }
+
     .video-layer {
       position: absolute;
       top: 50%;
@@ -163,7 +173,7 @@
       min-height: 100%;
       width: auto;
       height: auto;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) scale(1.06);
       object-fit: cover;
       opacity: 0;
       transition: opacity 1.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -174,11 +184,36 @@
       opacity: 1;
     }
 
+    .interactive-bg-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .interactive-cursor-glow {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      will-change: background, opacity;
+    }
+
+    .interactive-cursor-glow.active {
+      opacity: 1;
+    }
+
     /* Original Sellix Vignette & Ambient Radial Gradients */
     .video-vignette {
       position: absolute;
       inset: 0;
-      z-index: 1;
+      z-index: 3;
       pointer-events: none;
       background-image:
         radial-gradient(circle at center, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.92) 100%),
@@ -733,32 +768,40 @@
 </head>
 <body>
 
-  <!-- ================= 1. BACKGROUND VIDEO (EXACT SELLIX EARTH) ================= -->
+  <!-- ================= 1. BACKGROUND VIDEO & INTERACTIVE SYSTEM ================= -->
   <div class="video-viewport" aria-hidden="true">
-    <video
-      id="bg-video-1"
-      class="video-layer active"
-      muted
-      playsinline
-      webkit-playsinline
-      autoplay
-      preload="auto"
-      poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp"
-    >
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
-    </video>
+    <div class="video-parallax-wrapper" id="video-parallax-wrapper">
+      <video
+        id="bg-video-1"
+        class="video-layer active"
+        muted
+        playsinline
+        webkit-playsinline
+        autoplay
+        preload="auto"
+        poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp"
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
+      </video>
 
-    <video
-      id="bg-video-2"
-      class="video-layer"
-      muted
-      playsinline
-      webkit-playsinline
-      preload="auto"
-      poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp"
-    >
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
-    </video>
+      <video
+        id="bg-video-2"
+        class="video-layer"
+        muted
+        playsinline
+        webkit-playsinline
+        preload="auto"
+        poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp"
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- Interactive Cursor Glow Spotlight -->
+    <div id="interactive-cursor-glow" class="interactive-cursor-glow"></div>
+
+    <!-- Interactive Civic Constellation & Sonar Radar Canvas -->
+    <canvas id="interactive-bg-canvas" class="interactive-bg-canvas"></canvas>
 
     <div class="video-vignette"></div>
   </div>
@@ -1170,6 +1213,225 @@
         if (!document.hidden) {
           activeVideo.play().catch(function() {});
         }
+      });
+    })();
+  </script>
+
+  <!-- Script 2B: Interactive 3D Parallax, Civic Constellation & Sonar Radar -->
+  <script>
+    (function initInteractiveBackground() {
+      var parallaxWrapper = document.getElementById('video-parallax-wrapper');
+      var glowEl = document.getElementById('interactive-cursor-glow');
+      var canvas = document.getElementById('interactive-bg-canvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      var targetParallaxX = 0, targetParallaxY = 0;
+      var currentParallaxX = 0, currentParallaxY = 0;
+      var mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000, isHovered: false };
+      var isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      window.addEventListener('mousemove', function(e) {
+        mouse.isHovered = true;
+        mouse.targetX = e.clientX;
+        mouse.targetY = e.clientY;
+        if (!isReduced) {
+          var relX = (e.clientX / window.innerWidth) - 0.5;
+          var relY = (e.clientY / window.innerHeight) - 0.5;
+          targetParallaxX = relX * -24;
+          targetParallaxY = relY * -18;
+        }
+        document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+        document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+      }, { passive: true });
+
+      document.addEventListener('mouseleave', function() {
+        mouse.isHovered = false;
+        targetParallaxX = 0;
+        targetParallaxY = 0;
+        if (glowEl) glowEl.classList.remove('active');
+      });
+
+      document.addEventListener('mouseenter', function() {
+        mouse.isHovered = true;
+        if (glowEl) glowEl.classList.add('active');
+      });
+
+      // Sonar Radar Ripples on click / tap
+      var ripples = [];
+      function triggerRipple(x, y) {
+        ripples.push({
+          x: x, y: y, radius: 4,
+          maxRadius: Math.min(window.innerWidth, window.innerHeight) * 0.45,
+          alpha: 0.65, speed: 4.0, color: 'rgba(255, 113, 53, '
+        });
+        setTimeout(function() {
+          ripples.push({
+            x: x, y: y, radius: 2,
+            maxRadius: Math.min(window.innerWidth, window.innerHeight) * 0.35,
+            alpha: 0.38, speed: 3.0, color: 'rgba(255, 255, 255, '
+          });
+        }, 130);
+      }
+
+      window.addEventListener('pointerdown', function(e) {
+        triggerRipple(e.clientX, e.clientY);
+      }, { passive: true });
+
+      var width = 0, height = 0, particles = [];
+      var PARTICLE_COUNT = window.innerWidth < 768 ? 26 : 52;
+
+      function resize() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.scale(dpr, dpr);
+      }
+
+      function initParticles() {
+        particles = [];
+        var colors = ['#ffffff', '#ffffff', '#FF7135', '#38D982', '#ffffff'];
+        for (var i = 0; i < PARTICLE_COUNT; i++) {
+          var baseAlpha = 0.25 + Math.random() * 0.55;
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.42,
+            vy: (Math.random() - 0.5) * 0.42,
+            radius: 0.8 + Math.random() * 1.5,
+            baseAlpha: baseAlpha,
+            alpha: baseAlpha,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            pulse: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.015 + Math.random() * 0.025
+          });
+        }
+      }
+
+      resize();
+      initParticles();
+      window.addEventListener('resize', function() {
+        resize();
+        initParticles();
+      });
+
+      var isVisible = true;
+      function render() {
+        if (!isVisible) {
+          requestAnimationFrame(render);
+          return;
+        }
+
+        currentParallaxX += (targetParallaxX - currentParallaxX) * 0.07;
+        currentParallaxY += (targetParallaxY - currentParallaxY) * 0.07;
+
+        if (parallaxWrapper && !isReduced) {
+          parallaxWrapper.style.transform = 'translate3d(' + currentParallaxX.toFixed(2) + 'px, ' + currentParallaxY.toFixed(2) + 'px, 0)';
+        }
+
+        mouse.x += (mouse.targetX - mouse.x) * 0.12;
+        mouse.y += (mouse.targetY - mouse.y) * 0.12;
+
+        if (glowEl && mouse.isHovered) {
+          glowEl.style.background = 'radial-gradient(550px circle at ' + mouse.x.toFixed(1) + 'px ' + mouse.y.toFixed(1) + 'px, rgba(255, 113, 53, 0.11), rgba(255, 255, 255, 0.02) 42%, transparent 75%)';
+          if (!glowEl.classList.contains('active')) glowEl.classList.add('active');
+        }
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Ripples
+        for (var r = ripples.length - 1; r >= 0; r--) {
+          var rip = ripples[r];
+          rip.radius += rip.speed;
+          rip.alpha = (1 - rip.radius / rip.maxRadius) * 0.65;
+          if (rip.radius >= rip.maxRadius || rip.alpha <= 0.01) {
+            ripples.splice(r, 1);
+            continue;
+          }
+          ctx.beginPath();
+          ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = rip.color + rip.alpha.toFixed(3) + ')';
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(rip.x, rip.y, rip.radius * 0.85, 0, Math.PI * 2);
+          ctx.strokeStyle = rip.color + (rip.alpha * 0.35).toFixed(3) + ')';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+
+        // Particles
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          p.pulse += p.pulseSpeed;
+          p.alpha = p.baseAlpha + Math.sin(p.pulse) * 0.18;
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < -20) p.x = width + 20;
+          else if (p.x > width + 20) p.x = -20;
+          if (p.y < -20) p.y = height + 20;
+          else if (p.y > height + 20) p.y = -20;
+
+          if (mouse.isHovered) {
+            var dx = p.x - mouse.x;
+            var dy = p.y - mouse.y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            var PROXIMITY = 160;
+
+            if (dist < PROXIMITY) {
+              var force = (PROXIMITY - dist) / PROXIMITY;
+              p.x += (dx / dist) * force * 1.8;
+              p.y += (dy / dist) * force * 1.8;
+
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.strokeStyle = 'rgba(255, 113, 53, ' + (force * 0.28).toFixed(3) + ')';
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          }
+
+          for (var j = i + 1; j < particles.length; j++) {
+            var p2 = particles[j];
+            var dx2 = p.x - p2.x;
+            var dy2 = p.y - p2.y;
+            var dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+            var MAX_LINE_DIST = 105;
+
+            if (dist2 < MAX_LINE_DIST) {
+              var lineAlpha = (1 - dist2 / MAX_LINE_DIST) * 0.15;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = 'rgba(255, 255, 255, ' + lineAlpha.toFixed(3) + ')';
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0.1, Math.min(1, p.alpha));
+          ctx.fill();
+          ctx.globalAlpha = 1.0;
+        }
+
+        requestAnimationFrame(render);
+      }
+
+      requestAnimationFrame(render);
+
+      document.addEventListener('visibilitychange', function() {
+        isVisible = !document.hidden;
       });
     })();
   </script>
