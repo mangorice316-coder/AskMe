@@ -64,9 +64,29 @@ export default function AnalysisResults({
     `ASKME-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`
   );
   const [civicSummary, setCivicSummary] = useState<CivicSummaryResult | null>(null);
+  const [selectedModelId, setSelectedModelId] = useState('qwen-2.5-7b');
 
   const { authorityMatch } = analysis;
   const primaryAuth = authorityMatch.primaryAuthority;
+
+  const handleSwitchModel = async (modelId: string) => {
+    setSelectedModelId(modelId);
+    const telemetry: CivicWorkflowTelemetry = {
+      complaintId: generatedComplaintId,
+      mainIssue: analysis.mainIssue,
+      category: analysis.category,
+      severity: analysis.severity,
+      location: primaryAuth.jurisdiction || 'Local Municipal Ward',
+      photoCount: photos.length,
+      authorityName: primaryAuth.name,
+      authorityJurisdiction: primaryAuth.jurisdiction,
+      authorityPortal: primaryAuth.grievancePortal,
+      letterSubject: analysis.letterSubject,
+      status: isSubmitted ? 'Submitted' : 'Prepared',
+    };
+    const updated = await generateCivicActionSummary(telemetry, modelId);
+    setCivicSummary(updated);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -84,14 +104,14 @@ export default function AnalysisResults({
       status: isSubmitted ? 'Submitted' : 'Prepared',
     };
 
-    generateCivicActionSummary(telemetry).then((result) => {
+    generateCivicActionSummary(telemetry, selectedModelId).then((result) => {
       if (isMounted) setCivicSummary(result);
     });
 
     return () => {
       isMounted = false;
     };
-  }, [analysis, photos.length, generatedComplaintId, isSubmitted]);
+  }, [analysis, photos.length, generatedComplaintId, isSubmitted, selectedModelId]);
 
   const handleCopyLetter = async () => {
     soundFx.playClick();
@@ -271,6 +291,8 @@ export default function AnalysisResults({
         <CivicActionSummaryCard
           summaryResult={civicSummary}
           complaintId={generatedComplaintId}
+          selectedModelId={selectedModelId}
+          onSelectModel={handleSwitchModel}
         />
       )}
 

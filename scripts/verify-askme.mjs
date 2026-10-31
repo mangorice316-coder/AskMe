@@ -3,6 +3,7 @@ import {
   generateCivicActionSummary,
   buildSummarizerPrompt,
   buildActionCheckpoints,
+  OPEN_SOURCE_MODELS,
 } from '../src/services/openSourceSummarizer.ts';
 
 console.log('--- STARTING ASKME SYSTEM AUDIT & INTEGRITY CHECKS ---');
@@ -114,7 +115,35 @@ assert(summaryOutput.summaryText.length > 50, 'Summarizer generates substantive 
 assert(summaryOutput.summaryText.includes('Bruhat Bengaluru Mahanagara Palike'), 'Summary attributes responsible authority.');
 assert(summaryOutput.summaryText.includes('ASKME-2026-998877'), 'Summary cites complaint tracking reference.');
 assert(typeof summaryOutput.latencyMs === 'number', 'Latency measurement returned.');
-console.log(`[AI SUMMARY SAMPLE]:\n"${summaryOutput.summaryText}"\n[Model: ${summaryOutput.modelIdentifier}]`);
+
+// Test 11: Open-Source Models Registry Coverage
+assert(OPEN_SOURCE_MODELS.length >= 6, `Open-source registry hosts ${OPEN_SOURCE_MODELS.length} foundation models.`);
+const expectedModelIds = ['qwen-2.5-7b', 'llama-3.2-3b', 'mistral-7b', 'phi-3.5-mini', 'flan-t5-small', 'deepseek-r1-distill-7b'];
+assert(
+  expectedModelIds.every((id) => OPEN_SOURCE_MODELS.some((m) => m.id === id)),
+  'All 6 open-source foundation model families verified (Qwen 2.5, Llama 3.2, Mistral 7B, Phi 3.5, FLAN-T5, DeepSeek R1).'
+);
+
+// Test 12: Qwen 2.5 Multilingual Inference
+const qwenOutput = await generateCivicActionSummary({ ...mockTelemetry, preferredLanguage: 'Tamil' }, 'qwen-2.5-7b');
+assert(qwenOutput.modelId === 'qwen-2.5-7b', 'Qwen 2.5 selected and executed.');
+assert(qwenOutput.bilingualSummary !== undefined, 'Qwen 2.5 produces bilingual vernacular output.');
+assert(qwenOutput.bilingualSummary.text.length > 10, 'Qwen 2.5 generates Tamil/Hindi vernacular script.');
+
+// Test 13: Mistral 7B Legal Citations Extraction
+const mistralOutput = await generateCivicActionSummary(mockTelemetry, 'mistral-7b');
+assert(mistralOutput.modelId === 'mistral-7b', 'Mistral 7B selected and executed.');
+assert(mistralOutput.statutoryCitations && mistralOutput.statutoryCitations.length >= 2, 'Mistral 7B extracts statutory legal citations.');
+
+// Test 14: DeepSeek R1 Chain-of-Thought Jurisdictional Audit
+const deepseekOutput = await generateCivicActionSummary(mockTelemetry, 'deepseek-r1-distill-7b');
+assert(deepseekOutput.modelId === 'deepseek-r1-distill-7b', 'DeepSeek R1 Distill selected and executed.');
+assert(deepseekOutput.reasoningSteps && deepseekOutput.reasoningSteps.length >= 3, 'DeepSeek R1 generates step-by-step CoT audit.');
+
+// Test 15: Llama 3.2 Edge Reasoning & Phi-3.5 Compact Model
+const llamaOutput = await generateCivicActionSummary(mockTelemetry, 'llama-3.2-3b');
+const phiOutput = await generateCivicActionSummary(mockTelemetry, 'phi-3.5-mini');
+assert(llamaOutput.modelId === 'llama-3.2-3b' && phiOutput.modelId === 'phi-3.5-mini', 'Llama 3.2 and Phi-3.5 successfully execute.');
 
 console.log(`\nTESTS COMPLETED: ${passedTests}/${totalTests} passed.`);
 if (passedTests === totalTests) {
