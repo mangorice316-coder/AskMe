@@ -83,7 +83,7 @@ export default function Footer({
 
 const styles = StyleSheet.create({
   footerContainer: {
-    backgroundColor: '#0A0A09',
+    backgroundColor: '#000000',
     paddingTop: 64,
     paddingBottom: 40,
     paddingHorizontal: 24,

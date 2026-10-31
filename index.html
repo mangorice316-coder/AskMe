@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ASKME — AI-Powered Civic Action Platform</title>
+  
+  <!-- Plus Jakarta Sans: weights 300, 400, 500, 600, 800 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       SELLIX REFERENCE RECREATION STYLESHEET
+       Monochrome Palette | Plus Jakarta Sans | Masked Typography
+       ========================================================================== */
+    :root {
+      --bg: #000000;
+      --text-main: #ffffff;
+      --text-muted: #ededed;
+      --text-subtle: rgba(237, 237, 237, 0.72);
+      --panel: #181818;
+      --btn-white: #fdfdfd;
+      --btn-text: #050505;
+      --glass-fill: rgba(0, 0, 0, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.09);
+      --glass-border-hover: rgba(255, 255, 255, 0.22);
+      --font-family: 'PJS', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow-x: hidden;
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* ================= 1. BACKGROUND VIDEO (EXACT EARTH ANIMATION) ================= */
+    .video-viewport {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .video-layer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity;
+    }
+
+    .video-layer.active {
+      opacity: 1;
+    }
+
+    /* Original Sellix Vignette & Ambient Radial Gradients */
+    .video-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at center, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.92) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, transparent 20%, transparent 75%, rgba(0, 0, 0, 0.96) 100%);
+    }
+
+    /* ================= 2. NAVBAR ================= */
+    .navbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 74px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 36px;
+    }
+
+    .navbar-inner {
+      width: 100%;
+      max-width: 1220px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+      cursor: pointer;
+    }
+
+    .brand-logo:hover {
+      opacity: 0.85;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: color 0.2s ease, opacity 0.2s ease;
+      cursor: pointer;
+      padding: 6px 0;
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--btn-white);
+      color: var(--btn-text);
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 9px 20px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, opacity 0.2s ease;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.22);
+      opacity: 0.95;
+    }
+
+    .hamburger-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: var(--text-main);
+    }
+
+    .hamburger-icon {
+      width: 22px;
+      height: 14px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hamburger-icon span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-main);
+      border-radius: 2px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    /* ================= 3. CENTERED HERO COMPOSITION ================= */
+    .hero-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      min-height: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: -12px;
+    }
+
+    /* Masked lines for entrance sequence */
+    .hero-headline {
+      font-size: clamp(48px, 6.2vw, 84px);
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+      color: var(--text-main);
+      margin-bottom: 22px;
+    }
+
+    .line-mask {
+      overflow: hidden;
+      display: block;
+    }
+
+    .line-inner {
+      display: block;
+      transform: translateY(115%);
+      opacity: 0;
+      transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+    }
+
+    .hero-subtitle {
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      opacity: 0;
+      transform: translateY(16px);
+      filter: blur(6px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform, filter;
+    }
+
+    .hero-description {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      color: var(--text-subtle);
+      max-width: 610px;
+      margin: 0 auto 34px auto;
+      opacity: 0;
+      transform: translateY(16px);
+      filter: blur(4px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform, filter;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(18px) scale(0.97);
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 28px;
+      border-radius: 9999px;
+      font-size: 14.5px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, background-color 0.22s ease, border-color 0.22s ease;
+      outline: none;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--btn-white);
+      color: var(--btn-text);
+      font-weight: 600;
+      border-color: var(--btn-white);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(255, 255, 255, 0.22);
+    }
+
+    .btn-secondary {
+      background: var(--glass-fill);
+      color: var(--text-main);
+      font-weight: 500;
+      border-color: var(--glass-border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(24, 24, 24, 0.92);
+      border-color: var(--glass-border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Initial state for navbar elements in entrance sequence */
+    .nav-anim {
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    /* ================= 4. MOBILE DRAWER ================= */
+    .mobile-drawer {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+
+    .mobile-drawer.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 12px;
+    }
+
+    .mobile-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .mobile-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      list-style: none;
+      margin-top: 40px;
+    }
+
+    .mobile-nav-link {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      transition: color 0.2s ease;
+    }
+
+    .mobile-nav-link:hover {
+      color: var(--text-main);
+    }
+
+    .mobile-drawer-cta {
+      margin-top: auto;
+      margin-bottom: 24px;
+      width: 100%;
+      text-align: center;
+      padding: 16px;
+      font-size: 15px;
+    }
+
+    /* ================= 5. INTERACTIVE MONOCHROME GLASS MODALS ================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      z-index: 150;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+      transform: scale(0.96) translateY(12px);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .modal-subtitle {
+      font-size: 14px;
+      color: var(--text-subtle);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .modal-form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .modal-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .modal-input, .modal-textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text-main);
+      font-family: var(--font-family);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .modal-input:focus, .modal-textarea:focus {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .modal-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .input-pills-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .pill-opt {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill-opt.active, .pill-opt:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .authority-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .authority-name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .authority-meta {
+      font-size: 11px;
+      color: var(--text-subtle);
+    }
+
+    /* ================= 6. RESPONSIVE BREAKPOINTS ================= */
+    @media (max-width: 860px) {
+      .navbar {
+        padding: 0 20px;
+        height: 64px;
+      }
+      .nav-links, .nav-cta {
+        display: none;
+      }
+      .hamburger-btn {
+        display: block;
+      }
+      .hero-headline {
+        font-size: clamp(34px, 8.4vw, 52px);
+        line-height: 1.08;
+        letter-spacing: -0.035em;
+        margin-bottom: 18px;
+      }
+      .hero-subtitle {
+        font-size: 17px;
+        padding: 0 10px;
+        margin-bottom: 12px;
+      }
+      .hero-description {
+        font-size: 13.5px;
+        line-height: 1.5;
+        padding: 0 12px;
+        margin-bottom: 28px;
+      }
+      .hero-cta-row {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+        gap: 12px;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+
+    /* Accessibility: Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .line-inner {
+        transform: none !important;
+        opacity: 1 !important;
+        transition: none !important;
+      }
+      .hero-subtitle, .hero-description, .hero-cta-row, .nav-anim {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        transition: none !important;
+      }
+      .video-layer {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= 1. BACKGROUND VIDEO (EXACT SELLIX EARTH) ================= -->
+  <div class="video-viewport" aria-hidden="true">
+    <video
+      id="bg-video-1"
+      class="video-layer active"
+      muted
+      playsinline
+      webkit-playsinline
+      autoplay
+      preload="auto"
+      poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp"
+    >
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
+    </video>
+
+    <video
+      id="bg-video-2"
+      class="video-layer"
+      muted
+      playsinline
+      webkit-playsinline
+      preload="auto"
+      poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp"
+    >
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4" type="video/mp4">
+    </video>
+
+    <div class="video-vignette"></div>
+  </div>
+
+  <!-- React Native Web Root Mount Point -->
+  <div id="root"></div>
+
+  <!-- ================= 2. NAVBAR ================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="brand-logo nav-anim" id="brand-logo">ASKME</a>
+
+      <nav>
+        <ul class="nav-links">
+          <li class="nav-anim"><a href="#" class="nav-link" id="nav-home">Home</a></li>
+          <li class="nav-anim"><a href="#how-it-works" class="nav-link" id="nav-how-it-works">How It Works</a></li>
+          <li class="nav-anim"><a href="#features" class="nav-link" id="nav-features">Features</a></li>
+          <li class="nav-anim"><a href="#vault" class="nav-link" id="nav-vault">Vault</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-right nav-anim">
+        <button class="nav-cta" id="nav-report-btn">Report a Problem</button>
+        <button class="hamburger-btn" id="nav-hamburger" aria-label="Open Navigation Menu">
+          <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= 3. CENTERED HERO SECTION ================= -->
+  <main class="hero-container">
+    <div class="hero-content">
+      <!-- 4-Line Masked Headline: Exact Sellix Placement -->
+      <h1 class="hero-headline">
+        <span class="line-mask"><span class="line-inner">Your City</span></span>
+        <span class="line-mask"><span class="line-inner">Has a Problem.</span></span>
+        <span class="line-mask"><span class="line-inner">Let's Make It</span></span>
+        <span class="line-mask"><span class="line-inner">Heard.</span></span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="hero-subtitle">One photo, one voice, or one simple description.</p>
+
+      <!-- Description -->
+      <p class="hero-description">
+        ASKME identifies the responsible municipal jurisdiction, analyzes your evidence, and helps generate a structured civic petition backed by relevant statutory references.
+      </p>
+
+      <!-- CTAs -->
+      <div class="hero-cta-row">
+        <button class="btn btn-primary" id="hero-primary-cta">Report a Problem</button>
+        <button class="btn btn-secondary" id="hero-secondary-cta">Discover ASKME</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= 4. MOBILE DRAWER ================= -->
+  <div class="mobile-drawer" id="mobile-menu" aria-hidden="true">
+    <div class="mobile-header">
+      <span class="brand-logo">ASKME</span>
+      <button class="mobile-close-btn" id="mobile-close" aria-label="Close menu">&times;</button>
+    </div>
+    <ul class="mobile-nav-list">
+      <li><a href="#" class="mobile-nav-link" id="mob-home">Home</a></li>
+      <li><a href="#how-it-works" class="mobile-nav-link" id="mob-how">How It Works</a></li>
+      <li><a href="#features" class="mobile-nav-link" id="mob-features">Features</a></li>
+      <li><a href="#vault" class="mobile-nav-link" id="mob-vault">Vault</a></li>
+    </ul>
+    <button class="btn btn-primary mobile-drawer-cta" id="mob-report-btn">Report a Problem</button>
+  </div>
+
+  <!-- ================= 5. INTERACTIVE FUNCTIONAL OVERLAYS ================= -->
+  <!-- 5A. Report a Problem Modal -->
+  <div class="modal-overlay" id="report-modal" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" data-close="report-modal">&times;</button>
+      <h2 class="modal-title">Report a Problem</h2>
+      <p class="modal-subtitle">Submit evidence to identify the statutory authority and prepare a formal grievance.</p>
+
+      <div class="modal-form-group">
+        <label class="modal-label">Input Mode</label>
+        <div class="input-pills-row">
+          <div class="pill-opt active" id="mode-photo">📷 Photo + GPS</div>
+          <div class="pill-opt" id="mode-voice">🎙️ Voice Note</div>
+          <div class="pill-opt" id="mode-text">✍️ Description</div>
+        </div>
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label">Incident Location (City / Ward)</label>
+        <input type="text" class="modal-input" id="report-location" placeholder="e.g. Anna Nagar Main Road, Chennai (or GPS auto-lock)" value="Ward 104, Greater Chennai Corporation">
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label">Problem Details</label>
+        <textarea class="modal-textarea" id="report-desc" placeholder="Describe the civic hazard, location landmark, road damage, garbage overflow, or water logging...">Severe drainage overflow and open manhole posing pedestrian risk near bus stop for 3 days.</textarea>
+      </div>
+
+      <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" id="submit-report-btn">
+        Dispatch Statutory Analysis
+      </button>
+    </div>
+  </div>
+
+  <!-- 5B. Discover / How It Works Modal -->
+  <div class="modal-overlay" id="how-modal" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" data-close="how-modal">&times;</button>
+      <h2 class="modal-title">How ASKME Works</h2>
+      <p class="modal-subtitle">Four deterministic steps turning raw citizen evidence into formal statutory petitions.</p>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">01. Multimodal Evidence Intake</div>
+          <div class="authority-meta">EXIF GPS extraction, voice acoustic transcription, and photo categorization.</div>
+        </div>
+      </div>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">02. GIS Statutory Routing</div>
+          <div class="authority-meta">Locks onto 19 verified authorities (NHAI, GCC, BBMP, Indian Railways RailMadad).</div>
+        </div>
+      </div>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">03. Legal Citation Engine</div>
+          <div class="authority-meta">Embeds Indian Penal Code, Municipal Corporation Acts, and National Green Tribunal precedents.</div>
+        </div>
+      </div>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">04. Citizen Vault Persistence</div>
+          <div class="authority-meta">On-device encrypted history tracking with formal PDF, Email, and WhatsApp dispatch.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5C. Features Modal -->
+  <div class="modal-overlay" id="features-modal" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" data-close="features-modal">&times;</button>
+      <h2 class="modal-title">Platform Features</h2>
+      <p class="modal-subtitle">Engineered for Indian civic accountability, transparency, and statutory precision.</p>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">19 Verified Real Authorities</div>
+          <div class="authority-meta">Live HTTPS official grievance portal endpoints across Municipal, State, and National tiers.</div>
+        </div>
+      </div>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">Multi-Foundation LLM Summarizer</div>
+          <div class="authority-meta">Powered by Qwen 2.5 (vernacular), Mistral 7B (statutory citations), and DeepSeek R1 (reasoning).</div>
+        </div>
+      </div>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">100% Free & Open Source</div>
+          <div class="authority-meta">Zero commercial tracking. Transparent civic accountability code.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5D. Vault Modal -->
+  <div class="modal-overlay" id="vault-modal" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" data-close="vault-modal">&times;</button>
+      <h2 class="modal-title">Citizen Vault</h2>
+      <p class="modal-subtitle">Archived grievance records and statutory tracking references stored locally.</p>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">ASKME-2026-894120</div>
+          <div class="authority-meta">Potholes & Waterlogging · Greater Chennai Corporation (GCC)</div>
+        </div>
+        <span style="font-size: 11px; padding: 4px 8px; border-radius: 9999px; background: rgba(255,255,255,0.08); color: #fff;">Submitted</span>
+      </div>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">ASKME-2026-621045</div>
+          <div class="authority-meta">Broken Footpath Slab · BBMP Bangalore</div>
+        </div>
+        <span style="font-size: 11px; padding: 4px 8px; border-radius: 9999px; background: rgba(255,255,255,0.08); color: #fff;">Resolved</span>
+      </div>
+
+      <div class="authority-pill">
+        <div>
+          <div class="authority-name">ASKME-2026-441908</div>
+          <div class="authority-meta">Highway Guardrail Damage · NHAI Corridor NH-48</div>
+        </div>
+        <span style="font-size: 11px; padding: 4px 8px; border-radius: 9999px; background: rgba(255,255,255,0.08); color: #fff;">In Progress</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6. SCRIPTS ================= -->
+  <!-- Script 1: Entrance Sequence -->
+  <script>
+    (function initEntranceAnimation() {
+      function run() {
+        var isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var lines = document.querySelectorAll('.line-inner');
+        var subtitle = document.querySelector('.hero-subtitle');
+        var desc = document.querySelector('.hero-description');
+        var ctaRow = document.querySelector('.hero-cta-row');
+        var navItems = document.querySelectorAll('.nav-anim');
+
+        if (isReduced) {
+          lines.forEach(function(l) { l.style.transform = 'none'; l.style.opacity = '1'; });
+          if (subtitle) { subtitle.style.opacity = '1'; subtitle.style.transform = 'none'; subtitle.style.filter = 'none'; }
+          if (desc) { desc.style.opacity = '1'; desc.style.transform = 'none'; desc.style.filter = 'none'; }
+          if (ctaRow) { ctaRow.style.opacity = '1'; ctaRow.style.transform = 'none'; }
+          navItems.forEach(function(n) { n.style.opacity = '1'; n.style.transform = 'none'; });
+          return;
+        }
+
+        // Staggered Navbar entrance
+        navItems.forEach(function(el, i) {
+          setTimeout(function() {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, 140 + (i * 60));
+        });
+
+        // Staggered masked headline lines
+        lines.forEach(function(line, idx) {
+          setTimeout(function() {
+            line.style.transform = 'translateY(0)';
+            line.style.opacity = '1';
+          }, 220 + (idx * 115));
+        });
+
+        // Subtitle blur & upward fade
+        setTimeout(function() {
+          if (subtitle) {
+            subtitle.style.opacity = '1';
+            subtitle.style.transform = 'translateY(0)';
+            subtitle.style.filter = 'blur(0)';
+          }
+        }, 690);
+
+        // Description blur & upward fade
+        setTimeout(function() {
+          if (desc) {
+            desc.style.opacity = '1';
+            desc.style.transform = 'translateY(0)';
+            desc.style.filter = 'blur(0)';
+          }
+        }, 830);
+
+        // CTA buttons scale & settle
+        setTimeout(function() {
+          if (ctaRow) {
+            ctaRow.style.opacity = '1';
+            ctaRow.style.transform = 'translateY(0) scale(1)';
+          }
+        }, 970);
+      }
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(run);
+      } else {
+        window.addEventListener('load', run);
+      }
+    })();
+  </script>
+
+  <!-- Script 2: Seamless Two-Video Crossfade Technique -->
+  <script>
+    (function initVideoCrossfade() {
+      var v1 = document.getElementById('bg-video-1');
+      var v2 = document.getElementById('bg-video-2');
+      if (!v1 || !v2) return;
+
+      var activeVideo = v1;
+      var inactiveVideo = v2;
+      var isCrossfading = false;
+      var CROSSFADE_WINDOW = 1.35; // seconds before end to crossfade
+
+      function prepare(v) {
+        v.muted = true;
+        v.playsInline = true;
+        v.setAttribute('muted', '');
+        v.setAttribute('playsinline', '');
+        v.setAttribute('webkit-playsinline', '');
+      }
+
+      prepare(v1);
+      prepare(v2);
+
+      function tryPlay(v) {
+        var p = v.play();
+        if (p !== undefined) {
+          p.catch(function() {
+            function unlock() {
+              v.play().catch(function() {});
+              window.removeEventListener('pointerdown', unlock);
+              window.removeEventListener('keydown', unlock);
+            }
+            window.addEventListener('pointerdown', unlock, { once: true });
+            window.addEventListener('keydown', unlock, { once: true });
+          });
+        }
+      }
+
+      tryPlay(v1);
+
+      function checkCrossfade(e) {
+        var curr = e.target;
+        if (curr !== activeVideo) return;
+
+        if (!isCrossfading && curr.duration && curr.currentTime >= curr.duration - CROSSFADE_WINDOW) {
+          isCrossfading = true;
+          inactiveVideo.currentTime = 0;
+
+          var playPromise = inactiveVideo.play();
+          function performFade() {
+            inactiveVideo.classList.add('active');
+            activeVideo.classList.remove('active');
+
+            setTimeout(function() {
+              activeVideo.pause();
+              activeVideo.currentTime = 0;
+              var temp = activeVideo;
+              activeVideo = inactiveVideo;
+              inactiveVideo = temp;
+              isCrossfading = false;
+            }, 1300);
+          }
+
+          if (playPromise !== undefined) {
+            playPromise.then(performFade).catch(function() {
+              isCrossfading = false;
+            });
+          } else {
+            performFade();
+          }
+        }
+      }
+
+      v1.addEventListener('timeupdate', checkCrossfade);
+      v2.addEventListener('timeupdate', checkCrossfade);
+
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+          activeVideo.play().catch(function() {});
+        }
+      });
+    })();
+  </script>
+
+  <!-- Script 3: Mobile Menu & Interactive Modals -->
+  <script>
+    (function initInteractions() {
+      // Mobile Drawer
+      var hamburger = document.getElementById('nav-hamburger');
+      var mobileMenu = document.getElementById('mobile-menu');
+      var mobileClose = document.getElementById('mobile-close');
+      var mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+      function openDrawer() {
+        if (mobileMenu) mobileMenu.classList.add('open');
+      }
+      function closeDrawer() {
+        if (mobileMenu) mobileMenu.classList.remove('open');
+      }
+
+      if (hamburger) hamburger.addEventListener('click', openDrawer);
+      if (mobileClose) mobileClose.addEventListener('click', closeDrawer);
+      mobileLinks.forEach(function(l) { l.addEventListener('click', closeDrawer); });
+
+      // Modals
+      function openModal(id) {
+        var modal = document.getElementById(id);
+        if (modal) modal.classList.add('open');
+      }
+
+      function closeModal(id) {
+        var modal = document.getElementById(id);
+        if (modal) modal.classList.remove('open');
+      }
+
+      // Close buttons
+      document.querySelectorAll('.modal-close').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var target = btn.getAttribute('data-close');
+          if (target) closeModal(target);
+        });
+      });
+
+      // Close on backdrop click
+      document.querySelectorAll('.modal-overlay').forEach(function(ov) {
+        ov.addEventListener('click', function(e) {
+          if (e.target === ov) ov.classList.remove('open');
+        });
+      });
+
+      // ESC key to close
+      window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-overlay.open').forEach(function(ov) {
+            ov.classList.remove('open');
+          });
+          closeDrawer();
+        }
+      });
+
+      // Connect CTAs and Navigation links
+      var reportTriggers = [
+        document.getElementById('nav-report-btn'),
+        document.getElementById('hero-primary-cta'),
+        document.getElementById('mob-report-btn')
+      ];
+      reportTriggers.forEach(function(el) {
+        if (el) el.addEventListener('click', function(e) {
+          e.preventDefault();
+          closeDrawer();
+          openModal('report-modal');
+        });
+      });
+
+      var howTriggers = [
+        document.getElementById('nav-how-it-works'),
+        document.getElementById('hero-secondary-cta'),
+        document.getElementById('mob-how')
+      ];
+      howTriggers.forEach(function(el) {
+        if (el) el.addEventListener('click', function(e) {
+          e.preventDefault();
+          closeDrawer();
+          openModal('how-modal');
+        });
+      });
+
+      var featureTriggers = [
+        document.getElementById('nav-features'),
+        document.getElementById('mob-features')
+      ];
+      featureTriggers.forEach(function(el) {
+        if (el) el.addEventListener('click', function(e) {
+          e.preventDefault();
+          closeDrawer();
+          openModal('features-modal');
+        });
+      });
+
+      var vaultTriggers = [
+        document.getElementById('nav-vault'),
+        document.getElementById('mob-vault')
+      ];
+      vaultTriggers.forEach(function(el) {
+        if (el) el.addEventListener('click', function(e) {
+          e.preventDefault();
+          closeDrawer();
+          openModal('vault-modal');
+        });
+      });
+
+      // Input mode pill toggles in report modal
+      var pills = document.querySelectorAll('.pill-opt');
+      pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          pills.forEach(function(p) { p.classList.remove('active'); });
+          pill.classList.add('active');
+        });
+      });
+
+      // Submit report button simulated confirmation
+      var submitBtn = document.getElementById('submit-report-btn');
+      if (submitBtn) {
+        submitBtn.addEventListener('click', function() {
+          submitBtn.textContent = 'Routing to Statutory Authority...';
+          submitBtn.style.opacity = '0.7';
+          setTimeout(function() {
+            submitBtn.textContent = '✓ Grievance Filed (ASKME-2026-' + Math.floor(100000 + Math.random() * 900000) + ')';
+            submitBtn.style.opacity = '1';
+            setTimeout(function() {
+              closeModal('report-modal');
+              submitBtn.textContent = 'Dispatch Statutory Analysis';
+            }, 1400);
+          }, 900);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
