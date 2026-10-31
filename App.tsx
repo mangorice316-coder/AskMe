@@ -454,20 +454,128 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         }
       }
 
-      /* Fluid Bidirectional Fade In / Fade Out on Scroll */
-      [data-scroll-fade] {
+      /* =========================================================================
+         ADVANCED CINEMATIC SCROLL ANIMATION SYSTEM
+         Apple / Linear-grade Staggered Scroll Reveals, Parallax & Directional Physics
+         ========================================================================= */
+
+      /* Base scroll reveal element */
+      .scroll-reveal,
+      [data-scroll-reveal],
+      [data-testid="askme-reveal"],
+      .askme-reveal {
         opacity: 0;
-        transform: translateY(24px);
-        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: opacity, transform;
+        transform: translateY(32px) scale(0.97);
+        filter: blur(4px);
+        transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform, filter;
       }
-      [data-scroll-fade].is-visible {
+
+      .scroll-reveal.is-in-view,
+      .scroll-reveal.is-revealed,
+      [data-scroll-reveal].is-in-view,
+      [data-scroll-reveal].is-revealed,
+      [data-testid="askme-reveal"].is-in-view,
+      [data-testid="askme-reveal"].is-revealed,
+      .askme-reveal.is-revealed {
         opacity: 1 !important;
-        transform: translateY(0) !important;
+        transform: translateY(0) scale(1) !important;
+        filter: blur(0px) !important;
       }
-      [data-scroll-fade].is-faded-out {
-        opacity: 0.25 !important;
-        transform: translateY(-12px) !important;
+
+      .scroll-reveal.is-scrolled-past,
+      [data-scroll-reveal].is-scrolled-past,
+      [data-testid="askme-reveal"].is-scrolled-past {
+        opacity: 0.2 !important;
+        transform: translateY(-16px) scale(0.99) !important;
+        filter: blur(2px) !important;
+      }
+
+      /* Directional Slide from Left (e.g. Bento Wide cards) */
+      [data-reveal="left"] {
+        opacity: 0;
+        transform: translateX(-40px) translateY(12px) scale(0.98);
+        filter: blur(4px);
+        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform, filter;
+      }
+      [data-reveal="left"].is-in-view,
+      [data-reveal="left"].is-revealed {
+        opacity: 1 !important;
+        transform: translateX(0) translateY(0) scale(1) !important;
+        filter: blur(0px) !important;
+      }
+      [data-reveal="left"].is-scrolled-past {
+        opacity: 0.2 !important;
+        transform: translateY(-16px) !important;
+      }
+
+      /* Directional Slide from Right (e.g. Bento Compact cards) */
+      [data-reveal="right"] {
+        opacity: 0;
+        transform: translateX(40px) translateY(12px) scale(0.98);
+        filter: blur(4px);
+        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform, filter;
+      }
+      [data-reveal="right"].is-in-view,
+      [data-reveal="right"].is-revealed {
+        opacity: 1 !important;
+        transform: translateX(0) translateY(0) scale(1) !important;
+        filter: blur(0px) !important;
+      }
+      [data-reveal="right"].is-scrolled-past {
+        opacity: 0.2 !important;
+        transform: translateY(-16px) !important;
+      }
+
+      /* Cascading Stagger Delays for Pipeline Stages (01 -> 05) */
+      .stagger-1 { transition-delay: 0.04s !important; }
+      .stagger-2 { transition-delay: 0.12s !important; }
+      .stagger-3 { transition-delay: 0.20s !important; }
+      .stagger-4 { transition-delay: 0.28s !important; }
+      .stagger-5 { transition-delay: 0.36s !important; }
+
+      /* Dynamic Circuit Track & Leading Glow */
+      #askme-circuit-fill, .circuitTrackFill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #FF7135 0%, #ffffff 80%, #ffffff 100%);
+        box-shadow: 0 0 16px rgba(255, 113, 53, 0.85), 0 0 28px rgba(255, 255, 255, 0.6);
+        transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: width;
+      }
+
+      /* Severity index progress bar dynamic fill on reveal */
+      .classFillHigh {
+        width: 0% !important;
+        transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.35s !important;
+      }
+      .is-in-view .classFillHigh,
+      .is-revealed .classFillHigh {
+        width: 98.4% !important;
+      }
+
+      /* Live Green Radar Dot Pulse */
+      .liveGreenDot, .livePulseDot {
+        animation: radarPing 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+      }
+      @keyframes radarPing {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 217, 130, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(56, 217, 130, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 217, 130, 0); }
+      }
+
+      /* Laser progress bar trailing glow */
+      #askme-scroll-progress-bar {
+        background: linear-gradient(90deg, #FF7135, #FF8A50, #ffffff);
+        box-shadow: 0 0 14px rgba(255, 113, 53, 0.9), 0 0 24px rgba(255, 255, 255, 0.5);
       }
 
       /* Hover Interactions & Transitions */
@@ -676,17 +784,24 @@ function AppContent() {
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') return;
 
-    // 1. One-time reveals
+    // 1. Directional and bidirectional scroll reveals
     const revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
-            revealObserver.unobserve(entry.target);
+            entry.target.classList.add('is-revealed', 'is-in-view');
+            entry.target.classList.remove('is-scrolled-past');
+          } else {
+            if (entry.boundingClientRect.top < 0) {
+              entry.target.classList.add('is-scrolled-past');
+              entry.target.classList.remove('is-in-view');
+            } else {
+              entry.target.classList.remove('is-in-view', 'is-scrolled-past');
+            }
           }
         });
       },
-      { rootMargin: '0px 0px -20px 0px', threshold: 0.05 }
+      { rootMargin: '-20px 0px -30px 0px', threshold: [0, 0.1, 0.35] }
     );
 
     // 2. Bidirectional fluid fade in / fade out on scroll
@@ -734,7 +849,7 @@ function AppContent() {
 
     const observeTargets = () => {
       const revealTargets = document.querySelectorAll(
-        '[data-testid="askme-reveal"]:not(.is-revealed), .askme-reveal:not(.is-revealed)'
+        '[data-testid="askme-reveal"], .askme-reveal, [data-scroll-reveal], [data-reveal], .scroll-reveal, .stageCard, .bentoCard, .bentoQuadCard, .closingBanner, .statsStrip'
       );
       revealTargets.forEach((el) => revealObserver.observe(el));
 

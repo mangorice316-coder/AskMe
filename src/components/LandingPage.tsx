@@ -54,7 +54,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
       setShowBackToTop(false);
     }
 
-    // Direct DOM progress bar update on web (zero React re-renders, 120fps fluid)
+    // Direct DOM progress bar update & scroll animations on web (zero React re-renders, 120fps fluid)
     if (Platform.OS === 'web') {
       const contentH = event.nativeEvent.contentSize.height;
       const layoutH = event.nativeEvent.layoutMeasurement.height;
@@ -64,6 +64,46 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
       if (el) {
         el.style.width = `${progress}%`;
       }
+
+      // 1. Hero Content Scroll Parallax & Dissolve
+      const heroContent = document.querySelector('.hero-content') as HTMLElement | null;
+      if (heroContent) {
+        if (y < 650) {
+          const heroOpacity = Math.max(0, 1 - (y / 460));
+          const heroTranslateY = y * 0.32;
+          heroContent.style.opacity = `${heroOpacity}`;
+          heroContent.style.transform = `translateY(${heroTranslateY}px) scale(${1 - y * 0.00025})`;
+        } else {
+          heroContent.style.opacity = '0';
+        }
+      }
+
+      // 2. Circuit Track Progress Fill in "How It Works"
+      const circuitTrack = document.getElementById('askme-circuit-fill');
+      if (circuitTrack) {
+        const circuitStart = 380;
+        const circuitEnd = 860;
+        const circuitProgress = Math.min(100, Math.max(0, ((y - circuitStart) / (circuitEnd - circuitStart)) * 100));
+        circuitTrack.style.width = `${circuitProgress}%`;
+      }
+
+      // 3. Fast viewport intersection check on scroll for cards & sections
+      const revealNodes = document.querySelectorAll(
+        '.scroll-reveal, [data-scroll-reveal], [data-reveal], [data-testid="askme-reveal"]'
+      );
+      const winH = window.innerHeight || document.documentElement.clientHeight;
+      revealNodes.forEach((node) => {
+        const rect = node.getBoundingClientRect();
+        if (rect.top < winH - 50 && rect.bottom > 40) {
+          node.classList.add('is-in-view', 'is-revealed');
+          node.classList.remove('is-scrolled-past');
+        } else if (rect.bottom <= 40) {
+          node.classList.add('is-scrolled-past');
+          node.classList.remove('is-in-view');
+        } else {
+          node.classList.remove('is-in-view', 'is-scrolled-past');
+        }
+      });
     }
   };
 
@@ -113,7 +153,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
-        scrollEventThrottle={32}
+        scrollEventThrottle={16}
       >
         {/* ================= 1. SELLIX REFERENCE RECREATION HERO ================= */}
         <View style={styles.sellixHeroWrapper}>
@@ -189,7 +229,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
         <View
           style={styles.statsStrip}
           testID="askme-reveal"
-          {...(Platform.OS === 'web' ? { 'data-scroll-fade': '' } as any : {})}
+          {...(Platform.OS === 'web' ? { className: 'statsStrip scroll-reveal', 'data-scroll-reveal': '' } as any : {})}
         >
           <View style={styles.statBox}>
             <Text style={styles.statNumber}>500K+</Text>
@@ -224,7 +264,10 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
 
         {/* ================= 3. HOW IT WORKS (PROMPT SECTION 09) ================= */}
         <View style={styles.howItWorksSection} id="how-it-works" testID="askme-reveal">
-          <View style={styles.sectionHeader}>
+          <View
+            style={styles.sectionHeader}
+            {...(Platform.OS === 'web' ? { className: 'scroll-reveal', 'data-scroll-reveal': '' } as any : {})}
+          >
             <View style={styles.sectionEyebrowBadge}>
               <Text style={styles.sectionEyebrowText}>STATUTORY ROUTING PIPELINE</Text>
             </View>
@@ -240,13 +283,17 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           <View style={styles.circuitTrackWrapper}>
             <View
               style={styles.circuitTrackFill}
-              {...(Platform.OS === 'web' ? { className: 'laser-pulse' } as any : {})}
+              {...(Platform.OS === 'web' ? { id: 'askme-circuit-fill', className: 'circuitTrackFill' } as any : {})}
             />
           </View>
 
           <View style={styles.stagesPipeline}>
             {/* Step 1: Capture Evidence */}
-            <View style={styles.stageCard} testID="askme-reveal">
+            <View
+              style={styles.stageCard}
+              testID="askme-reveal"
+              {...(Platform.OS === 'web' ? { className: 'stageCard scroll-reveal stagger-1', 'data-scroll-reveal': '' } as any : {})}
+            >
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
                   <Camera size={17} color="#FF7135" />
@@ -265,7 +312,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             </View>
 
             {/* Step 2: Detect Location */}
-            <View style={styles.stageCard} testID="askme-reveal">
+            <View
+              style={styles.stageCard}
+              testID="askme-reveal"
+              {...(Platform.OS === 'web' ? { className: 'stageCard scroll-reveal stagger-2', 'data-scroll-reveal': '' } as any : {})}
+            >
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
                   <MapPin size={17} color="#FF7135" />
@@ -284,7 +335,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             </View>
 
             {/* Step 3: AI Analysis */}
-            <View style={styles.stageCard} testID="askme-reveal">
+            <View
+              style={styles.stageCard}
+              testID="askme-reveal"
+              {...(Platform.OS === 'web' ? { className: 'stageCard scroll-reveal stagger-3', 'data-scroll-reveal': '' } as any : {})}
+            >
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
                   <Sparkles size={17} color="#FF7135" />
@@ -303,7 +358,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             </View>
 
             {/* Step 4: Verify Authority */}
-            <View style={styles.stageCard} testID="askme-reveal">
+            <View
+              style={styles.stageCard}
+              testID="askme-reveal"
+              {...(Platform.OS === 'web' ? { className: 'stageCard scroll-reveal stagger-4', 'data-scroll-reveal': '' } as any : {})}
+            >
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
                   <Search size={17} color="#FF7135" />
@@ -322,7 +381,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             </View>
 
             {/* Step 5: Generate Petition */}
-            <View style={styles.stageCard} testID="askme-reveal">
+            <View
+              style={styles.stageCard}
+              testID="askme-reveal"
+              {...(Platform.OS === 'web' ? { className: 'stageCard scroll-reveal stagger-5', 'data-scroll-reveal': '' } as any : {})}
+            >
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
                   <FileText size={17} color="#FF7135" />
@@ -340,7 +403,10 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
 
         {/* ================= 4. FEATURES SECTION — ASYMMETRIC BENTO GRID (PROMPT SECTION 10) ================= */}
         <View style={styles.featuresSection} id="features" testID="askme-reveal">
-          <View style={styles.sectionHeader}>
+          <View
+            style={styles.sectionHeader}
+            {...(Platform.OS === 'web' ? { className: 'scroll-reveal', 'data-scroll-reveal': '' } as any : {})}
+          >
             <View style={styles.sectionEyebrowBadge}>
               <Text style={styles.sectionEyebrowText}>SYSTEM CAPABILITIES</Text>
             </View>
@@ -362,7 +428,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                 onPress={handleStart}
                 activeOpacity={0.88}
                 testID="askme-reveal"
-                {...(Platform.OS === 'web' ? { 'data-reveal': 'left' } as any : {})}
+                {...(Platform.OS === 'web' ? { className: 'bentoCard bentoCardWide scroll-reveal', 'data-reveal': 'left' } as any : {})}
               >
                 <View style={styles.bentoHeaderRow}>
                   <View style={styles.bentoIconBox}>
@@ -402,7 +468,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                 onPress={handleStart}
                 activeOpacity={0.88}
                 testID="askme-reveal"
-                {...(Platform.OS === 'web' ? { 'data-reveal': 'right' } as any : {})}
+                {...(Platform.OS === 'web' ? { className: 'bentoCard bentoCardCompact scroll-reveal', 'data-reveal': 'right' } as any : {})}
               >
                 <View style={styles.bentoHeaderRow}>
                   <View style={styles.bentoIconBox}>
@@ -434,7 +500,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                 onPress={handleStart}
                 activeOpacity={0.88}
                 testID="askme-reveal"
-                {...(Platform.OS === 'web' ? { 'data-reveal': 'left' } as any : {})}
+                {...(Platform.OS === 'web' ? { className: 'bentoCard bentoCardCompact scroll-reveal', 'data-reveal': 'left' } as any : {})}
               >
                 <View style={styles.bentoHeaderRow}>
                   <View style={styles.bentoIconBox}>
@@ -466,7 +532,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                 onPress={handleStart}
                 activeOpacity={0.88}
                 testID="askme-reveal"
-                {...(Platform.OS === 'web' ? { 'data-reveal': 'right' } as any : {})}
+                {...(Platform.OS === 'web' ? { className: 'bentoCard bentoCardWide scroll-reveal', 'data-reveal': 'right' } as any : {})}
               >
                 <View style={styles.bentoHeaderRow}>
                   <View style={[styles.bentoIconBox, { backgroundColor: '#FF7135' }]}>
@@ -495,7 +561,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             {/* Row 3: 4 Equal Grid Capabilities */}
             <View style={styles.bentoQuadRow}>
               {/* Bento 5: Legal Petition Generation */}
-              <View style={styles.bentoQuadCard} testID="askme-reveal">
+              <View
+                style={styles.bentoQuadCard}
+                testID="askme-reveal"
+                {...(Platform.OS === 'web' ? { className: 'bentoQuadCard scroll-reveal stagger-1', 'data-scroll-reveal': '' } as any : {})}
+              >
                 <View style={styles.bentoIconBox}>
                   <FileText size={16} color="#FF7135" />
                 </View>
@@ -506,7 +576,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
               </View>
 
               {/* Bento 6: Complaint History & Citizen Vault */}
-              <View style={styles.bentoQuadCard} testID="askme-reveal">
+              <View
+                style={styles.bentoQuadCard}
+                testID="askme-reveal"
+                {...(Platform.OS === 'web' ? { className: 'bentoQuadCard scroll-reveal stagger-2', 'data-scroll-reveal': '' } as any : {})}
+              >
                 <View style={styles.bentoIconBox}>
                   <Database size={16} color="#38D982" />
                 </View>
@@ -517,7 +591,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
               </View>
 
               {/* Bento 7: Real-Time Telemetry Terminal */}
-              <View style={styles.bentoQuadCard} testID="askme-reveal">
+              <View
+                style={styles.bentoQuadCard}
+                testID="askme-reveal"
+                {...(Platform.OS === 'web' ? { className: 'bentoQuadCard scroll-reveal stagger-3', 'data-scroll-reveal': '' } as any : {})}
+              >
                 <View style={styles.bentoIconBox}>
                   <Activity size={16} color="#FF8A50" />
                 </View>
@@ -528,7 +606,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
               </View>
 
               {/* Bento 8: Responsive Citizen Interface */}
-              <View style={styles.bentoQuadCard} testID="askme-reveal">
+              <View
+                style={styles.bentoQuadCard}
+                testID="askme-reveal"
+                {...(Platform.OS === 'web' ? { className: 'bentoQuadCard scroll-reveal stagger-4', 'data-scroll-reveal': '' } as any : {})}
+              >
                 <View style={styles.bentoIconBox}>
                   <Smartphone size={16} color="#3B82F6" />
                 </View>
@@ -542,7 +624,11 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
         </View>
 
         {/* ================= 5. CINEMATIC CLOSING BANNER ================= */}
-        <View style={styles.closingBanner} testID="askme-reveal">
+        <View
+          style={styles.closingBanner}
+          testID="askme-reveal"
+          {...(Platform.OS === 'web' ? { className: 'closingBanner scroll-reveal', 'data-scroll-reveal': '' } as any : {})}
+        >
           <View style={styles.closingAmbientGlow} />
           <AskMeLogo size={58} showText={false} animated={true} />
           <Text style={styles.closingHeadline}>
