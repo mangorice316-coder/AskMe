@@ -25,6 +25,8 @@ import {
   ArrowRight,
   ShieldCheck,
   Compass,
+  Mail,
+  Send,
 } from 'lucide-react-native';
 import { THEME } from '../theme/tokens';
 import { ComplaintAnalysisResult } from '../services/aiEngine';
@@ -56,7 +58,7 @@ export default function AnalysisResults({
   const [editedLetter, setEditedLetter] = useState(analysis.formalLetter);
   const [isEditing, setIsEditing] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [selectedTone, setSelectedTone] = useState<'Formal' | 'Assertive' | 'Urgent' | 'Legal'>('Formal');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [generatedComplaintId] = useState(
     `ASKME-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`
@@ -185,9 +187,47 @@ export default function AnalysisResults({
 
   const handleSendToAuthority = async () => {
     soundFx.playChime();
+    setIsSubmitting(true);
     onSaveToHistory(editedLetter, 'Submitted');
 
-    // Update telemetry summary
+    // 1. Automatically copy formal letter to clipboard for instant use in any portal form
+    try {
+      await Clipboard.setStringAsync(editedLetter);
+    } catch {
+      // ignore clipboard error
+    }
+
+    // 2. Prepare official email dispatch
+    const targetEmail = primaryAuth.officialEmail || 'grievance@municipal.gov.in';
+    const emailSubject = encodeURIComponent(`${analysis.letterSubject} [Ref: ${generatedComplaintId}]`);
+    const emailBody = encodeURIComponent(
+      `${editedLetter}\n\n---\nTransmitted via ASKME Citizen Grievance Redressal Assistant (Digital Reference: ${generatedComplaintId})`
+    );
+    const mailtoUrl = `mailto:${targetEmail}?subject=${emailSubject}&body=${emailBody}`;
+
+    // 3. Automatically dispatch: Open official portal and launch email client
+    try {
+      if (Platform.OS === 'web') {
+        if (primaryAuth.grievancePortal) {
+          window.open(primaryAuth.grievancePortal, '_blank');
+        }
+        if (primaryAuth.officialEmail) {
+          setTimeout(() => {
+            window.location.href = mailtoUrl;
+          }, 350);
+        }
+      } else {
+        if (primaryAuth.officialEmail) {
+          await Linking.openURL(mailtoUrl);
+        } else if (primaryAuth.grievancePortal) {
+          await Linking.openURL(primaryAuth.grievancePortal);
+        }
+      }
+    } catch (e) {
+      console.warn('Auto dispatch error', e);
+    }
+
+    // 4. Update FLAN-T5 Civic Action Summary with Submitted status
     const submittedTelemetry: CivicWorkflowTelemetry = {
       complaintId: generatedComplaintId,
       mainIssue: analysis.mainIssue,
@@ -201,30 +241,11 @@ export default function AnalysisResults({
       letterSubject: analysis.letterSubject,
       status: 'Submitted',
     };
-    generateCivicActionSummary(submittedTelemetry).then((res) => {
-      setCivicSummary(res);
-    });
-
-    // Open verified government portal in browser
-    try {
-      if (primaryAuth.grievancePortal) {
-        if (Platform.OS === 'web') {
-          window.open(primaryAuth.grievancePortal, '_blank');
-        } else {
-          await Linking.openURL(primaryAuth.grievancePortal);
-        }
-      }
-    } catch {
-      // Ignore open error
-    }
+    const updatedSummary = await generateCivicActionSummary(submittedTelemetry);
+    setCivicSummary(updatedSummary);
 
     setIsSubmitted(true);
-  };
-
-  const handleToneChange = async (tone: 'Formal' | 'Assertive' | 'Urgent' | 'Legal') => {
-    soundFx.playClick();
-    setSelectedTone(tone);
-    await onRegenerateLetter(tone, 'English');
+    setIsSubmitting(false);
   };
 
   // If user completed submission, render the radiant SuccessScreen (concept1_submission_confirmation.jpg)
@@ -233,6 +254,9 @@ export default function AnalysisResults({
       <SuccessScreen
         authorityName={primaryAuth.name}
         complaintId={generatedComplaintId}
+        officialEmail={primaryAuth.officialEmail}
+        grievancePortal={primaryAuth.grievancePortal}
+        letterText={editedLetter}
         summaryResult={civicSummary}
         onReportAnother={onBackToEdit}
         onGoToVault={onBackToEdit}
@@ -371,11 +395,8 @@ export default function AnalysisResults({
             {/* Grievance Redressal Portal */}
             <TouchableOpacity
               style={styles.linkRow}
-              onPress={() => {
-                if (primaryAuth.grievancePortal) {
-                  Linking.openURL(primaryAuth.grievancePortal);
-                }
-              }}
+              onPress={handleSendToAuthority}
+              activeOpacity={0.8}
             >
               <View style={[styles.linkDot, { backgroundColor: '#F47738' }]} />
               <View style={{ flex: 1 }}>
@@ -386,6 +407,22 @@ export default function AnalysisResults({
               </View>
               <ExternalLink size={13} color="#F47738" />
             </TouchableOpacity>
+
+            {/* Official Grievance Email */}
+            {primaryAuth.officialEmail && (
+              <TouchableOpacity
+                style={styles.linkRow}
+                onPress={handleSendToAuthority}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.linkDot, { backgroundColor: '#22C55E' }]} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.linkLabel}>Email Department</Text>
+                  <Text style={styles.linkValue}>{primaryAuth.officialEmail}</Text>
+                </View>
+                <Mail size={13} color="#22C55E" />
+              </TouchableOpacity>
+            )}
 
             {/* Verified Badge */}
             <View style={styles.verifiedRow}>
@@ -404,22 +441,6 @@ export default function AnalysisResults({
           <Text style={styles.sectionSubtitle}>
             Review and edit your formal complaint letter before sending.
           </Text>
-        </View>
-
-        {/* Tone Selector Pills */}
-        <View style={styles.tonePillRow}>
-          <Text style={styles.tonePrompt}>Tone:</Text>
-          {(['Formal', 'Assertive', 'Urgent', 'Legal'] as const).map((t) => (
-            <TouchableOpacity
-              key={t}
-              style={[styles.tonePill, selectedTone === t && styles.tonePillActive]}
-              onPress={() => handleToneChange(t)}
-            >
-              <Text style={[styles.tonePillText, selectedTone === t && styles.tonePillTextActive]}>
-                {t}
-              </Text>
-            </TouchableOpacity>
-          ))}
         </View>
 
         <View style={styles.letterGrid}>
@@ -492,11 +513,17 @@ export default function AnalysisResults({
 
             {/* Radiant Orange Primary Button: "Send to Authority →" */}
             <TouchableOpacity
-              style={styles.sendAuthorityBtn}
+              style={[styles.sendAuthorityBtn, isSubmitting && { opacity: 0.7 }]}
               onPress={handleSendToAuthority}
               activeOpacity={0.88}
+              disabled={isSubmitting}
+              accessibilityRole="button"
+              accessibilityLabel="Send formal complaint to authority"
             >
-              <Text style={styles.sendAuthorityBtnText}>Send to Authority</Text>
+              <Send size={15} color="#FFFFFF" strokeWidth={2.2} />
+              <Text style={styles.sendAuthorityBtnText}>
+                {isSubmitting ? 'Sending to Authority...' : 'Send to Authority'}
+              </Text>
               <ArrowRight size={15} color="#FFFFFF" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
@@ -695,40 +722,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '800',
     color: '#22C55E',
-  },
-  tonePillRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-    flexWrap: 'wrap',
-  },
-  tonePrompt: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#8E8A83',
-    fontFamily: THEME.fonts.mono,
-  },
-  tonePill: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: THEME.radii.pill,
-    backgroundColor: '#1E1E1C',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  tonePillActive: {
-    backgroundColor: 'rgba(244, 119, 56, 0.15)',
-    borderColor: '#F47738',
-  },
-  tonePillText: {
-    fontSize: 11,
-    color: '#A8A49D',
-    fontWeight: '600',
-  },
-  tonePillTextActive: {
-    color: '#F47738',
-    fontWeight: '800',
   },
   letterGrid: {
     flexDirection: Platform.OS === 'web' ? 'row' : 'column',

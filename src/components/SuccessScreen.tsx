@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing, Platform, Alert } from 'react-native';
-import { Check, ArrowRight, ExternalLink, ShieldCheck, Copy, Cpu, Sparkles } from 'lucide-react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing, Platform, Alert, Linking } from 'react-native';
+import { Check, ArrowRight, ExternalLink, ShieldCheck, Copy, Cpu, Sparkles, Mail } from 'lucide-react-native';
 import * as Clipboard from 'expo-clipboard';
 import { THEME } from '../theme/tokens';
 import { soundFx } from '../utils/soundEffects';
@@ -9,6 +9,9 @@ import { CivicSummaryResult } from '../services/openSourceSummarizer';
 interface SuccessScreenProps {
   authorityName?: string;
   complaintId?: string;
+  officialEmail?: string;
+  grievancePortal?: string;
+  letterText?: string;
   summaryResult?: CivicSummaryResult | null;
   onReportAnother: () => void;
   onGoToVault: () => void;
@@ -17,6 +20,9 @@ interface SuccessScreenProps {
 export default function SuccessScreen({
   authorityName = 'Bruhat Bengaluru Mahanagara Palike (BBMP)',
   complaintId = 'ASKME-2026-001234',
+  officialEmail,
+  grievancePortal,
+  letterText,
   summaryResult,
   onReportAnother,
   onGoToVault,
@@ -120,6 +126,53 @@ export default function SuccessScreen({
               </View>
             </View>
             <Text style={styles.aiBriefingText}>{summaryResult.summaryText}</Text>
+          </View>
+        )}
+
+        {/* Dispatched Authority Channels */}
+        {(grievancePortal || officialEmail) && (
+          <View style={styles.channelsBox}>
+            <Text style={styles.channelsTitle}>Dispatched Official Channels:</Text>
+            <View style={styles.channelsRow}>
+              {grievancePortal && (
+                <TouchableOpacity
+                  style={styles.channelPill}
+                  onPress={() => {
+                    soundFx.playClick();
+                    if (Platform.OS === 'web') {
+                      window.open(grievancePortal, '_blank');
+                    } else {
+                      Linking.openURL(grievancePortal);
+                    }
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <ExternalLink size={12} color="#F47738" />
+                  <Text style={styles.channelPillText}>Open Grievance Portal</Text>
+                </TouchableOpacity>
+              )}
+
+              {officialEmail && (
+                <TouchableOpacity
+                  style={styles.channelPill}
+                  onPress={() => {
+                    soundFx.playClick();
+                    const mailto = `mailto:${officialEmail}?subject=${encodeURIComponent(
+                      `Urgent Grievance Follow-up [Ref: ${complaintId}]`
+                    )}&body=${encodeURIComponent(letterText || '')}`;
+                    if (Platform.OS === 'web') {
+                      window.location.href = mailto;
+                    } else {
+                      Linking.openURL(mailto);
+                    }
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Mail size={12} color="#22C55E" />
+                  <Text style={styles.channelPillText}>Official Email: {officialEmail}</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         )}
 
@@ -341,6 +394,44 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     color: '#D8D2C7',
     textAlign: 'left',
+  },
+  channelsBox: {
+    width: '100%',
+    backgroundColor: 'rgba(244, 119, 56, 0.06)',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(244, 119, 56, 0.2)',
+    padding: 14,
+    marginBottom: 16,
+  },
+  channelsTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#A8A49D',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  channelsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  channelPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#1E1E1C',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  channelPillText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   noticeText: {
     fontSize: 12,
