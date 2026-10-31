@@ -123,21 +123,21 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           {Platform.OS === 'web' ? (
             <main className="hero-container">
               <div className="hero-content">
-                {/* 4-Line Masked Headline: Exact Sellix Placement */}
-                <h1 className="hero-headline">
+                {/* 4-Line Masked Headline: Exact Sellix Placement with Saibex heading font */}
+                <h1 className="hero-headline" data-font-heading="">
                   <span className="line-mask"><span className="line-inner">Your City</span></span>
                   <span className="line-mask"><span className="line-inner">Has a Problem.</span></span>
                   <span className="line-mask"><span className="line-inner">Let's Make It</span></span>
                   <span className="line-mask"><span className="line-inner">Heard.</span></span>
                 </h1>
 
-                {/* Subtitle */}
-                <p className="hero-subtitle hero-subtitle-anim">
+                {/* Subtitle with Rabios Diemo and Bidirectional Fade in / Fade out */}
+                <p className="hero-subtitle hero-subtitle-anim fade-text" data-font-body="" data-text-fade="">
                   One photo, one voice, or one simple description.
                 </p>
 
-                {/* Description */}
-                <p className="hero-description hero-desc-anim">
+                {/* Description with Rabios Diemo and Bidirectional Fade in / Fade out */}
+                <p className="hero-description hero-desc-anim fade-text" data-font-body="" data-text-fade="">
                   ASKME identifies the responsible municipal jurisdiction, analyzes your evidence, and helps generate a structured civic petition backed by relevant statutory references.
                 </p>
 
@@ -147,6 +147,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                     className="btn btn-primary"
                     id="hero-primary-cta"
                     onClick={handleStart}
+                    data-font-heading=""
                   >
                     Report a Problem
                   </button>
@@ -154,6 +155,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                     className="btn btn-secondary"
                     id="hero-secondary-cta"
                     onClick={scrollToHowItWorks}
+                    data-font-heading=""
                   >
                     Discover ASKME
                   </button>

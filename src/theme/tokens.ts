@@ -59,11 +59,11 @@ export const THEME = {
   },
   fonts: {
     heading: Platform.select({
-      web: "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      web: "'Saibex', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       default: 'System',
     }),
     body: Platform.select({
-      web: "'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      web: "'Rabios Diemo', 'Rabios DEMO', 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       default: 'System',
     }),
     editorial: Platform.select({

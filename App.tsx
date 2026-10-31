@@ -61,7 +61,110 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         --glass-fill: rgba(0, 0, 0, 0.78);
         --glass-border: rgba(255, 255, 255, 0.09);
         --glass-border-hover: rgba(255, 255, 255, 0.22);
-        --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-heading: 'Saibex', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-body: 'Rabios Diemo', 'Rabios DEMO', 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-family: var(--font-body);
+      }
+
+      @font-face {
+        font-family: 'Saibex';
+        src: local('Saibex'), local('Saibex-Regular'), local('Saibex Regular'), local('Saibex Bold');
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Rabios Diemo';
+        src: local('Rabios Diemo'), local('Rabios DEMO'), local('Rabios-DEMO'), local('Rabios');
+        font-display: swap;
+      }
+
+      h1, h2, h3, h4, h5, h6,
+      .hero-headline,
+      .sectionTitle,
+      .modal-title,
+      .brand-logo,
+      .bentoTitle,
+      .stageTitle,
+      .cardTitle,
+      .statNumber,
+      .closingHeadline,
+      .bentoQuadTitle,
+      .authority-name,
+      .modal-label,
+      [data-font-heading],
+      [data-heading] {
+        font-family: var(--font-heading) !important;
+        letter-spacing: -0.02em;
+      }
+
+      p,
+      span:not([data-font-heading]):not(.stageStepNumber):not(.bentoTagText):not(.radarVisualText):not(.brand-logo),
+      div:not([data-font-heading]),
+      body,
+      button,
+      input,
+      textarea,
+      .hero-subtitle,
+      .hero-description,
+      .sectionSubtitle,
+      .stageDesc,
+      .bentoDesc,
+      .closingSubtext,
+      .bentoQuadDesc,
+      .statMicro,
+      .statLabel,
+      .authority-meta,
+      .modal-subtitle,
+      [data-font-body] {
+        font-family: var(--font-body);
+      }
+
+      /* =========================================================================
+         BIDIRECTIONAL TEXT FADE IN & FADE OUT ENGINE
+         Text smoothly fades in entering viewport, fades out when scrolling away
+         ========================================================================= */
+      .fade-text,
+      [data-text-fade],
+      [data-fade-text],
+      p,
+      .hero-subtitle,
+      .hero-description,
+      .sectionSubtitle,
+      .stageDesc,
+      .bentoDesc,
+      .closingSubtext,
+      .bentoQuadDesc,
+      .statMicro {
+        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.65s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        will-change: opacity, transform, filter;
+      }
+
+      /* Initial state below viewport */
+      .text-below-view {
+        opacity: 0 !important;
+        transform: translateY(18px) !important;
+        filter: blur(2.5px) !important;
+      }
+
+      /* In viewport: crystal clear & illuminated */
+      .text-in-view {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        filter: blur(0px) !important;
+      }
+
+      /* Scrolled past the viewport (above top): subtle dimmed fade out */
+      .text-out-view {
+        opacity: 0.16 !important;
+        transform: translateY(-10px) !important;
+        filter: blur(1.5px) !important;
+      }
+
+      /* Micro-hover subtle illumination on text */
+      p:hover, .fade-text:hover, [data-text-fade]:hover, .hero-description:hover, .hero-subtitle:hover {
+        color: #ffffff !important;
+        text-shadow: 0 0 14px rgba(255, 255, 255, 0.32);
       }
 
       html {
@@ -574,6 +677,30 @@ function AppContent() {
       { rootMargin: '-20px 0px -20px 0px', threshold: 0.12 }
     );
 
+    // 3. Bidirectional fluid text fade in / fade out on scroll
+    const textFadeObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const rect = entry.boundingClientRect;
+          if (entry.isIntersecting) {
+            entry.target.classList.add('text-in-view');
+            entry.target.classList.remove('text-below-view', 'text-out-view');
+          } else {
+            if (rect.top < 0) {
+              // Scrolled past the top
+              entry.target.classList.add('text-out-view');
+              entry.target.classList.remove('text-in-view', 'text-below-view');
+            } else {
+              // Below the viewport
+              entry.target.classList.add('text-below-view');
+              entry.target.classList.remove('text-in-view', 'text-out-view');
+            }
+          }
+        });
+      },
+      { rootMargin: '-10px 0px -10px 0px', threshold: [0, 0.15, 0.5] }
+    );
+
     const observeTargets = () => {
       const revealTargets = document.querySelectorAll(
         '[data-testid="askme-reveal"]:not(.is-revealed), .askme-reveal:not(.is-revealed)'
@@ -582,6 +709,24 @@ function AppContent() {
 
       const fadeTargets = document.querySelectorAll('[data-scroll-fade]');
       fadeTargets.forEach((el) => fadeObserver.observe(el));
+
+      const textTargets = document.querySelectorAll(
+        '.fade-text, [data-text-fade], [data-fade-text], p, .hero-subtitle, .hero-description, .sectionSubtitle, .stageDesc, .bentoDesc, .closingSubtext, .bentoQuadDesc, .statMicro'
+      );
+      textTargets.forEach((el) => {
+        if (!el.classList.contains('text-in-view') && !el.classList.contains('text-out-view')) {
+          const rect = el.getBoundingClientRect();
+          const winHeight = window.innerHeight || document.documentElement.clientHeight;
+          if (rect.top > winHeight) {
+            el.classList.add('text-below-view');
+          } else if (rect.bottom < 0) {
+            el.classList.add('text-out-view');
+          } else {
+            el.classList.add('text-in-view');
+          }
+        }
+        textFadeObserver.observe(el);
+      });
     };
 
     // 3. Staggered Entrance Sequence for Hero Elements
@@ -633,6 +778,7 @@ function AppContent() {
       clearTimeout(timer);
       revealObserver.disconnect();
       fadeObserver.disconnect();
+      textFadeObserver.disconnect();
       mutationObs.disconnect();
     };
   }, [screen]);

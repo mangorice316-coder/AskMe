@@ -14,8 +14,19 @@
   <style>
     /* ==========================================================================
        SELLIX REFERENCE RECREATION STYLESHEET
-       Monochrome Palette | Plus Jakarta Sans | Masked Typography
+       Saibex Headings | Rabios Diemo Body | Bidirectional Text Fade In / Out
        ========================================================================== */
+    @font-face {
+      font-family: 'Saibex';
+      src: local('Saibex'), local('Saibex-Regular'), local('Saibex Regular'), local('Saibex Bold');
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Rabios Diemo';
+      src: local('Rabios Diemo'), local('Rabios DEMO'), local('Rabios-DEMO'), local('Rabios');
+      font-display: swap;
+    }
+
     :root {
       --bg: #000000;
       --text-main: #ffffff;
@@ -27,7 +38,89 @@
       --glass-fill: rgba(0, 0, 0, 0.78);
       --glass-border: rgba(255, 255, 255, 0.09);
       --glass-border-hover: rgba(255, 255, 255, 0.22);
-      --font-family: 'PJS', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-heading: 'Saibex', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-body: 'Rabios Diemo', 'Rabios DEMO', 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-family: var(--font-body);
+    }
+
+    h1, h2, h3, h4, h5, h6,
+    .hero-headline,
+    .section-title,
+    .modal-title,
+    .brand-logo,
+    .stage-title,
+    .bento-title,
+    .closing-headline,
+    .bento-quad-title,
+    .authority-name,
+    .modal-label,
+    [data-font-heading],
+    [data-heading] {
+      font-family: var(--font-heading) !important;
+      letter-spacing: -0.025em;
+    }
+
+    p,
+    span:not([data-font-heading]):not(.stage-step-num):not(.brand-logo),
+    div:not([data-font-heading]),
+    body,
+    button,
+    input,
+    textarea,
+    .hero-subtitle,
+    .hero-description,
+    .section-subtitle,
+    .stage-desc,
+    .bento-desc,
+    .closing-subtext,
+    .authority-meta,
+    .modal-subtitle,
+    [data-font-body] {
+      font-family: var(--font-body);
+    }
+
+    /* =========================================================================
+       BIDIRECTIONAL TEXT FADE IN & FADE OUT ENGINE
+       ========================================================================= */
+    .fade-text,
+    [data-text-fade],
+    [data-fade-text],
+    p,
+    .hero-subtitle,
+    .hero-description,
+    .section-subtitle,
+    .stage-desc,
+    .bento-desc,
+    .closing-subtext,
+    .authority-meta,
+    .modal-subtitle {
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform, filter;
+    }
+
+    .text-below-view {
+      opacity: 0 !important;
+      transform: translateY(18px) !important;
+      filter: blur(2.5px) !important;
+    }
+
+    .text-in-view {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      filter: blur(0px) !important;
+    }
+
+    .text-out-view {
+      opacity: 0.16 !important;
+      transform: translateY(-10px) !important;
+      filter: blur(1.5px) !important;
+    }
+
+    p:hover, .fade-text:hover, [data-text-fade]:hover, .hero-description:hover, .hero-subtitle:hover {
+      color: #ffffff !important;
+      text-shadow: 0 0 14px rgba(255, 255, 255, 0.32);
     }
 
     *, *::before, *::after {
@@ -703,26 +796,26 @@
   <!-- ================= 3. CENTERED HERO SECTION ================= -->
   <main class="hero-container">
     <div class="hero-content">
-      <!-- 4-Line Masked Headline: Exact Sellix Placement -->
-      <h1 class="hero-headline">
+      <!-- 4-Line Masked Headline: Exact Sellix Placement with Saibex heading font -->
+      <h1 class="hero-headline" data-font-heading="">
         <span class="line-mask"><span class="line-inner">Your City</span></span>
         <span class="line-mask"><span class="line-inner">Has a Problem.</span></span>
         <span class="line-mask"><span class="line-inner">Let's Make It</span></span>
         <span class="line-mask"><span class="line-inner">Heard.</span></span>
       </h1>
 
-      <!-- Subtitle -->
-      <p class="hero-subtitle">One photo, one voice, or one simple description.</p>
+      <!-- Subtitle with Rabios Diemo & Bidirectional Fade in / Fade out -->
+      <p class="hero-subtitle fade-text" data-font-body="" data-text-fade="">One photo, one voice, or one simple description.</p>
 
-      <!-- Description -->
-      <p class="hero-description">
+      <!-- Description with Rabios Diemo & Bidirectional Fade in / Fade out -->
+      <p class="hero-description fade-text" data-font-body="" data-text-fade="">
         ASKME identifies the responsible municipal jurisdiction, analyzes your evidence, and helps generate a structured civic petition backed by relevant statutory references.
       </p>
 
       <!-- CTAs -->
       <div class="hero-cta-row">
-        <button class="btn btn-primary" id="hero-primary-cta">Report a Problem</button>
-        <button class="btn btn-secondary" id="hero-secondary-cta">Discover ASKME</button>
+        <button class="btn btn-primary" id="hero-primary-cta" data-font-heading="">Report a Problem</button>
+        <button class="btn btn-secondary" id="hero-secondary-cta" data-font-heading="">Discover ASKME</button>
       </div>
     </div>
   </main>
@@ -947,6 +1040,56 @@
     })();
   </script>
 
+  <!-- Script 1B: Bidirectional Text Fade In & Fade Out -->
+  <script>
+    (function initTextFadeObserver() {
+      if (!('IntersectionObserver' in window)) return;
+      var textFadeObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          var rect = entry.boundingClientRect;
+          if (entry.isIntersecting) {
+            entry.target.classList.add('text-in-view');
+            entry.target.classList.remove('text-below-view', 'text-out-view');
+          } else {
+            if (rect.top < 0) {
+              entry.target.classList.add('text-out-view');
+              entry.target.classList.remove('text-in-view', 'text-below-view');
+            } else {
+              entry.target.classList.add('text-below-view');
+              entry.target.classList.remove('text-in-view', 'text-out-view');
+            }
+          }
+        });
+      }, { rootMargin: '-10px 0px -10px 0px', threshold: [0, 0.15, 0.5] });
+
+      function bindTextElements() {
+        var targets = document.querySelectorAll(
+          '.fade-text, [data-text-fade], [data-fade-text], p, .hero-subtitle, .hero-description, .modal-subtitle, .authority-meta'
+        );
+        targets.forEach(function(el) {
+          if (!el.classList.contains('text-in-view') && !el.classList.contains('text-out-view')) {
+            var rect = el.getBoundingClientRect();
+            var winHeight = window.innerHeight || document.documentElement.clientHeight;
+            if (rect.top > winHeight) {
+              el.classList.add('text-below-view');
+            } else if (rect.bottom < 0) {
+              el.classList.add('text-out-view');
+            } else {
+              el.classList.add('text-in-view');
+            }
+          }
+          textFadeObserver.observe(el);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindTextElements);
+      } else {
+        bindTextElements();
+      }
+    })();
+  </script>
+
   <!-- Script 2: Seamless Two-Video Crossfade Technique -->
   <script>
     (function initVideoCrossfade() {
@@ -1167,3 +1310,4 @@
   </script>
 </body>
 </html>
+
