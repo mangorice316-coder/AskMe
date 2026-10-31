@@ -216,7 +216,7 @@ export default function SuccessScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0D0D0C',
+    backgroundColor: '#0A0A09',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,

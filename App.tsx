@@ -42,7 +42,7 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
     link.id = 'askme-google-fonts';
     link.rel = 'stylesheet';
     link.href =
-      'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap';
+      'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap';
     document.head.appendChild(link);
   }
 
@@ -58,17 +58,17 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         margin: 0;
         padding: 0;
         background-color: #0A0A09;
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        color: #FFFFFF;
+        color: #F7F7F5;
         overflow-x: hidden;
       }
       * {
         box-sizing: border-box;
       }
       ::selection {
-        background-color: rgba(244, 119, 56, 0.35);
+        background-color: rgba(255, 113, 53, 0.35);
         color: #FFFFFF;
       }
       /* Custom luxury dark scrollbar */
@@ -80,11 +80,26 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         background: #0A0A09;
       }
       ::-webkit-scrollbar-thumb {
-        background: #262624;
+        background: #222220;
         border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #F47738;
+        background: #FF7135;
+      }
+
+      /* Liquid Glass Architecture */
+      .liquid-glass {
+        background: rgba(255, 255, 255, 0.035) !important;
+        backdrop-filter: blur(14px) !important;
+        -webkit-backdrop-filter: blur(14px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.09) !important;
+      }
+
+      /* Editorial serif emphasis */
+      .font-editorial {
+        font-family: 'Instrument Serif', Georgia, serif !important;
+        font-style: italic;
       }
       /* ================= SUBTLE, BUTTERY SMOOTH SCROLL REVEALS ================= */
       [data-testid="askme-reveal"], .askme-reveal {
@@ -550,7 +565,7 @@ function AppContent() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <NativeStatusBar backgroundColor="#F6F5F1" barStyle="dark-content" />
+      <NativeStatusBar backgroundColor="#0A0A09" barStyle="light-content" />
 
       {/* Splash Screen */}
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}

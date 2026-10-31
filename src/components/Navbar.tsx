@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
-  Animated,
 } from 'react-native';
 import {
   History,
@@ -71,7 +70,7 @@ export default function Navbar({
           accessibilityLabel="Go to AskMe home"
           activeOpacity={0.82}
         >
-          <AskMeLogo size={34} showText={true} />
+          <AskMeLogo size={32} showText={true} />
           <View style={styles.networkPulsePill}>
             <View style={styles.networkPulseDot} />
             <Text style={styles.networkPulseText}>ONLINE</Text>
@@ -106,7 +105,7 @@ export default function Navbar({
 
           <TouchableOpacity
             style={styles.navItem}
-            onPress={() => handleSectionClick('report-your-way')}
+            onPress={() => handleSectionClick('features')}
             activeOpacity={0.75}
           >
             <Text style={styles.navText}>Features</Text>
@@ -122,7 +121,7 @@ export default function Navbar({
             activeOpacity={0.75}
           >
             <View style={styles.vaultRow}>
-              <History size={13} color={currentScreen === 'history' ? '#F47738' : '#8E8A83'} />
+              <History size={13} color={currentScreen === 'history' ? '#FF7135' : '#A6A39E'} />
               <Text
                 style={[
                   styles.navText,
@@ -152,13 +151,13 @@ export default function Navbar({
             activeOpacity={0.8}
           >
             {audioEnabled ? (
-              <Volume2 size={14} color="#F47738" />
+              <Volume2 size={14} color="#FF7135" />
             ) : (
-              <VolumeX size={14} color="#6E6B65" />
+              <VolumeX size={14} color="#77736F" />
             )}
           </TouchableOpacity>
 
-          {/* Primary Action Button */}
+          {/* Primary Action Button with Button-in-Button Arrow */}
           {currentScreen !== 'report' ? (
             <TouchableOpacity
               style={styles.primaryCta}
@@ -169,7 +168,7 @@ export default function Navbar({
             >
               <Text style={styles.primaryCtaText}>Report Problem</Text>
               <View style={styles.arrowIconBubble}>
-                <ArrowRight size={12} color="#FFFFFF" strokeWidth={2.6} />
+                <ArrowRight size={12} color="#FFFFFF" strokeWidth={2.8} />
               </View>
             </TouchableOpacity>
           ) : (
@@ -201,54 +200,66 @@ export default function Navbar({
         </View>
       </View>
 
-      {/* 4. Mobile Responsive Drawer Sheet */}
+      {/* 4. Full-Screen Mobile Drawer Overlay (Prompt Section 04) */}
       {mobileMenuOpen && (
         <View style={styles.mobileDrawer}>
-          <TouchableOpacity
-            style={styles.mobileNavItem}
-            onPress={() => handleNavClick('landing')}
-          >
-            <Compass size={16} color={currentScreen === 'landing' ? '#F47738' : '#A8A49D'} />
-            <Text
-              style={[
-                styles.mobileNavText,
-                currentScreen === 'landing' && styles.mobileNavTextActive,
-              ]}
+          <View style={styles.mobileDrawerHeader}>
+            <AskMeLogo size={28} showText={true} />
+            <TouchableOpacity
+              style={styles.mobileCloseBtn}
+              onPress={() => setMobileMenuOpen(false)}
             >
-              Home Overview
-            </Text>
-          </TouchableOpacity>
+              <X size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity
-            style={styles.mobileNavItem}
-            onPress={() => handleSectionClick('how-it-works')}
-          >
-            <Sparkles size={16} color="#A8A49D" />
-            <Text style={styles.mobileNavText}>How It Works</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.mobileNavItem}
-            onPress={() => handleSectionClick('report-your-way')}
-          >
-            <Shield size={16} color="#A8A49D" />
-            <Text style={styles.mobileNavText}>Multimodal Features</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.mobileNavItem}
-            onPress={() => handleNavClick('history')}
-          >
-            <History size={16} color={currentScreen === 'history' ? '#F47738' : '#A8A49D'} />
-            <Text
-              style={[
-                styles.mobileNavText,
-                currentScreen === 'history' && styles.mobileNavTextActive,
-              ]}
+          <View style={styles.mobileLinksStack}>
+            <TouchableOpacity
+              style={styles.mobileNavItem}
+              onPress={() => handleNavClick('landing')}
             >
-              Citizen Vault ({historyCount})
-            </Text>
-          </TouchableOpacity>
+              <Compass size={18} color={currentScreen === 'landing' ? '#FF7135' : '#A6A39E'} />
+              <Text
+                style={[
+                  styles.mobileNavText,
+                  currentScreen === 'landing' && styles.mobileNavTextActive,
+                ]}
+              >
+                Home Overview
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.mobileNavItem}
+              onPress={() => handleSectionClick('how-it-works')}
+            >
+              <Sparkles size={18} color="#A6A39E" />
+              <Text style={styles.mobileNavText}>How It Works</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.mobileNavItem}
+              onPress={() => handleSectionClick('features')}
+            >
+              <Shield size={18} color="#A6A39E" />
+              <Text style={styles.mobileNavText}>Features & Capabilities</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.mobileNavItem}
+              onPress={() => handleNavClick('history')}
+            >
+              <History size={18} color={currentScreen === 'history' ? '#FF7135' : '#A6A39E'} />
+              <Text
+                style={[
+                  styles.mobileNavText,
+                  currentScreen === 'history' && styles.mobileNavTextActive,
+                ]}
+              >
+                Citizen Vault ({historyCount})
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.mobileDrawerDivider} />
 
@@ -256,8 +267,10 @@ export default function Navbar({
             style={styles.mobileCtaBtn}
             onPress={() => handleNavClick('report')}
           >
-            <Text style={styles.mobileCtaText}>Start Grievance Report</Text>
-            <ArrowRight size={14} color="#FFFFFF" strokeWidth={2.4} />
+            <Text style={styles.mobileCtaText}>Report a Problem</Text>
+            <View style={styles.arrowIconBubble}>
+              <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.6} />
+            </View>
           </TouchableOpacity>
         </View>
       )}
@@ -269,29 +282,31 @@ const styles = StyleSheet.create({
   floatingWrapper: {
     width: '100%',
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 14,
     paddingBottom: 6,
     zIndex: 9999,
     backgroundColor: 'transparent',
     alignItems: 'center',
   },
   navBarGlass: {
-    maxWidth: 1160,
+    maxWidth: 1140,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(15, 15, 14, 0.88)',
+    backgroundColor: 'rgba(17, 17, 15, 0.85)',
     borderRadius: THEME.radii.pill,
-    paddingVertical: 9,
+    paddingVertical: 8,
     paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.10)',
+    borderColor: 'rgba(255, 255, 255, 0.09)',
+    borderBottomColor: 'rgba(255, 113, 53, 0.35)',
+    borderBottomWidth: 1.5,
     ...(Platform.OS === 'web'
       ? {
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-          boxShadow: '0 16px 36px -6px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+          boxShadow: '0 18px 40px -6px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05)',
         }
       : {
           shadowColor: '#000000',
@@ -310,65 +325,64 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: 'rgba(34, 197, 94, 0.12)',
+    backgroundColor: 'rgba(56, 217, 130, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(56, 217, 130, 0.28)',
+    borderRadius: THEME.radii.pill,
     paddingHorizontal: 7,
     paddingVertical: 2.5,
-    borderRadius: THEME.radii.pill,
-    borderWidth: 1,
-    borderColor: 'rgba(34, 197, 94, 0.28)',
-    display: Platform.OS === 'web' ? 'flex' : 'none',
   },
   networkPulseDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#22C55E',
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#38D982',
   },
   networkPulseText: {
     fontSize: 9,
     fontWeight: '800',
-    color: '#22C55E',
-    letterSpacing: 0.8,
+    color: '#38D982',
+    letterSpacing: 0.6,
     fontFamily: THEME.fonts.mono,
   },
   centerNav: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 22,
-    display: Platform.OS === 'web' ? 'flex' : 'none',
+    gap: 4,
+    ...(Platform.OS === 'web'
+      ? {}
+      : {
+          display: 'none',
+        }),
   },
   navItem: {
     position: 'relative',
-    paddingVertical: 6,
-    paddingHorizontal: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: THEME.radii.pill,
   },
   navItemActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
   },
   navText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#A8A49D',
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    color: '#A6A39E',
     letterSpacing: -0.1,
+    fontFamily: THEME.fonts.heading,
   },
   navTextActive: {
-    color: '#FFFFFF',
+    color: '#F7F7F5',
     fontWeight: '700',
   },
   activeGlowPill: {
     position: 'absolute',
-    bottom: -2,
-    left: '25%',
-    right: '25%',
+    bottom: 2,
+    left: '20%',
+    right: '20%',
     height: 2,
-    backgroundColor: '#F47738',
     borderRadius: 1,
-    shadowColor: '#F47738',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 6,
+    backgroundColor: '#FF7135',
   },
   vaultRow: {
     flexDirection: 'row',
@@ -376,8 +390,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   vaultBadge: {
-    backgroundColor: '#F47738',
-    borderRadius: 8,
+    backgroundColor: '#FF7135',
+    borderRadius: 10,
     minWidth: 17,
     height: 17,
     alignItems: 'center',
@@ -393,48 +407,47 @@ const styles = StyleSheet.create({
   rightActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   soundBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   soundBtnActive: {
-    backgroundColor: 'rgba(244, 119, 56, 0.15)',
-    borderColor: 'rgba(244, 119, 56, 0.45)',
+    borderColor: 'rgba(255, 113, 53, 0.3)',
+    backgroundColor: 'rgba(255, 113, 53, 0.08)',
   },
   primaryCta: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#F47738',
-    paddingVertical: 8,
-    paddingLeft: 16,
-    paddingRight: 10,
+    backgroundColor: '#FF7135',
     borderRadius: THEME.radii.pill,
-    shadowColor: '#F47738',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.45,
-    shadowRadius: 14,
-    elevation: 4,
+    paddingVertical: 7,
+    paddingLeft: 14,
+    paddingRight: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
     ...(Platform.OS === 'web'
       ? {
-          transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+          backgroundImage: 'linear-gradient(135deg, #FF7135 0%, #FF8A50 100%)',
+          boxShadow: '0 6px 18px rgba(255, 113, 53, 0.38)',
+          cursor: 'pointer',
         }
       : {}),
   },
   primaryCtaText: {
-    fontSize: 12.5,
+    fontSize: 12,
     fontWeight: '800',
     color: '#FFFFFF',
-    letterSpacing: 0.2,
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    letterSpacing: 0.1,
+    fontFamily: THEME.fonts.heading,
   },
   arrowIconBubble: {
     width: 22,
@@ -445,44 +458,70 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   secondaryHomeBtn: {
-    paddingVertical: 7,
-    paddingHorizontal: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: THEME.radii.pill,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   secondaryHomeBtnText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#F7F7F5',
   },
   mobileMenuToggle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: 'rgba(255, 255, 255, 0.07)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     alignItems: 'center',
     justifyContent: 'center',
-    display: Platform.OS === 'web' ? 'none' : 'flex',
-  },
-  mobileDrawer: {
-    width: '100%',
-    maxWidth: 1160,
-    marginTop: 8,
-    backgroundColor: '#151514',
-    borderRadius: THEME.radii.lg,
-    padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    gap: 8,
+    borderColor: 'rgba(255, 255, 255, 0.09)',
     ...(Platform.OS === 'web'
       ? {
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.7)',
+          display: 'none',
         }
       : {}),
+  },
+
+  /* Mobile Full-Screen Drawer */
+  mobileDrawer: {
+    position: 'absolute',
+    top: 60,
+    left: 16,
+    right: 16,
+    backgroundColor: 'rgba(17, 17, 15, 0.96)',
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+    padding: 20,
+    gap: 16,
+    zIndex: 99999,
+    ...(Platform.OS === 'web'
+      ? {
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          boxShadow: '0 24px 50px rgba(0, 0, 0, 0.85)',
+        }
+      : {}),
+  },
+  mobileDrawerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.06)',
+  },
+  mobileCloseBtn: {
+    padding: 6,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+  },
+  mobileLinksStack: {
+    gap: 10,
   },
   mobileNavItem: {
     flexDirection: 'row',
@@ -490,34 +529,37 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    borderRadius: THEME.radii.md,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
   },
   mobileNavText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#A8A49D',
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#A6A39E',
+    fontFamily: THEME.fonts.heading,
   },
   mobileNavTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '700',
+    color: '#F7F7F5',
   },
   mobileDrawerDivider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    marginVertical: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
   },
   mobileCtaBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#F47738',
-    paddingVertical: 12,
+    backgroundColor: '#FF7135',
+    paddingVertical: 14,
     borderRadius: THEME.radii.pill,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   mobileCtaText: {
     color: '#FFFFFF',
-    fontWeight: '800',
     fontSize: 14,
+    fontWeight: '800',
+    letterSpacing: 0.2,
   },
 });

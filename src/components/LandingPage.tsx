@@ -18,9 +18,15 @@ import {
   Search,
   Send,
   Sparkles,
-  ShieldCheck,
   CheckCircle2,
   ArrowUp,
+  MapPin,
+  Building2,
+  ShieldCheck,
+  Activity,
+  Layers,
+  Database,
+  Smartphone,
 } from 'lucide-react-native';
 import { THEME } from '../theme/tokens';
 import AskMeLogo from './AskMeLogo';
@@ -40,7 +46,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = event.nativeEvent.contentOffset.y;
 
-    // Toggle back to top button with zero micro-render overhead
+    // Toggle back to top button without layout thrashing
     if (y > 400 && !showBackToTop) {
       setShowBackToTop(true);
     } else if (y <= 400 && showBackToTop) {
@@ -62,7 +68,12 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
 
   const scrollToHowItWorks = () => {
     soundFx.playClick();
-    scrollRef.current?.scrollTo({ y: 700, animated: true });
+    scrollRef.current?.scrollTo({ y: 720, animated: true });
+  };
+
+  const scrollToFeatures = () => {
+    soundFx.playClick();
+    scrollRef.current?.scrollTo({ y: 1320, animated: true });
   };
 
   const scrollToTop = () => {
@@ -86,6 +97,15 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
         />
       </View>
 
+      {/* Desktop Structural Architectural Gridlines (Prompt Section 05) */}
+      {Platform.OS === 'web' && (
+        <View style={styles.desktopGridLines}>
+          <View style={styles.gridLine} />
+          <View style={styles.gridLine} />
+          <View style={styles.gridLine} />
+        </View>
+      )}
+
       <ScrollView
         ref={scrollRef}
         style={styles.container}
@@ -94,42 +114,42 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
         onScroll={handleScroll}
         scrollEventThrottle={32}
       >
-        {/* ================= 1. ULTRA CINEMATIC HERO SECTION ================= */}
+        {/* ================= 1. HERO SECTION (PROMPT SECTION 05) ================= */}
         <View style={styles.heroSection}>
-          {/* Ambient Radial Glow Field */}
+          {/* Ambient Radial Atmospheric Glow Field */}
           <View style={styles.heroAmbientGlow} />
 
           <View style={styles.heroGrid}>
             {/* Left Column: Headlines & Actions */}
             <View style={styles.heroLeftCol}>
-              {/* Live Civic Network Status Pill */}
+              {/* Glass-style Eyebrow Badge */}
               <View style={styles.heroStatusPill} testID="askme-reveal">
                 <View style={styles.livePulseDot} />
-                <Text style={styles.heroStatusText}>AI-POWERED CIVIC ACTION PLATFORM</Text>
-                <View style={styles.statusDivider} />
-                <Text style={styles.heroStatusLive}>19+ JURISDICTIONS LIVE</Text>
+                <Text style={styles.heroStatusText}>
+                  AI-POWERED CIVIC ACTION PLATFORM | INDIA
+                </Text>
               </View>
 
               {/* Display Headline */}
               <Text style={styles.heroHeadline} testID="askme-reveal">
                 Your City{'\n'}
                 Has a Problem.{'\n'}
-                Let's Make It{'\n'}
+                Let's Make It{' '}
                 <Text style={styles.heroHeadlineOrange}>Heard.</Text>
               </Text>
 
-              {/* Concise Supporting Subtitle */}
+              {/* Supporting Subtitle */}
               <Text style={styles.heroSubtext} testID="askme-reveal">
-                One photo, one voice, or one simple description. AskMe automatically resolves the exact statutory municipal jurisdiction and drafts an enforceable petition with legal citations in seconds.
+                One photo, one voice, or one simple description. ASKME identifies the responsible municipal jurisdiction, analyzes your evidence, and helps generate a structured civic petition backed by relevant statutory references.
               </Text>
 
-              {/* Call to Actions */}
+              {/* Call to Actions (Button-in-Button Trailing Icon) */}
               <View style={styles.heroCtaRow} testID="askme-reveal">
                 <TouchableOpacity
                   style={styles.primaryReportBtn}
                   onPress={handleStart}
                   accessibilityRole="button"
-                  accessibilityLabel="Report a civic problem"
+                  accessibilityLabel="Report a problem"
                   activeOpacity={0.88}
                 >
                   <Text style={styles.primaryReportBtnText}>Report a Problem</Text>
@@ -142,8 +162,8 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
                   style={styles.discoverBtn}
                   onPress={scrollToHowItWorks}
                   accessibilityRole="button"
-                  accessibilityLabel="Discover how ASKME works"
-                  activeOpacity={0.8}
+                  accessibilityLabel="Discover ASKME"
+                  activeOpacity={0.82}
                 >
                   <Text style={styles.discoverBtnText}>Discover ASKME</Text>
                   <View style={styles.playIconCircle}>
@@ -155,24 +175,29 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
               {/* Citizen Trust Accreditation Badges */}
               <View style={styles.trustBadgeRow} testID="askme-reveal">
                 <View style={styles.trustItem}>
-                  <CheckCircle2 size={13} color="#22C55E" />
+                  <CheckCircle2 size={13} color="#38D982" />
                   <Text style={styles.trustItemText}>Statutory Verification</Text>
                 </View>
                 <View style={styles.trustDot} />
                 <View style={styles.trustItem}>
-                  <Sparkles size={13} color="#FF6652" />
+                  <Sparkles size={13} color="#FF7135" />
+                  <Text style={styles.trustItemText}>AI-Powered Analysis</Text>
+                </View>
+                <View style={styles.trustDot} />
+                <View style={styles.trustItem}>
+                  <ShieldCheck size={13} color="#38D982" />
                   <Text style={styles.trustItemText}>100% Free & Open-Source</Text>
                 </View>
               </View>
             </View>
 
-            {/* Right Column: Signature 3D Civic Signal Core with Orbiting Telemetry */}
+            {/* Right Column: 3D Ceramic Civic Signal Core with Orbiting Telemetry */}
             <View style={styles.heroRightCol}>
               <HeroIllustration />
             </View>
           </View>
 
-          {/* Bottom Metrics Ticker Strip */}
+          {/* ================= 2. STATISTICS SECTION (PROMPT SECTION 08) ================= */}
           <View style={styles.statsStrip} testID="askme-reveal">
             <View style={styles.statBox}>
               <Text style={styles.statNumber}>500K+</Text>
@@ -206,21 +231,21 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           </View>
         </View>
 
-        {/* ================= 2. HOW ASKME WORKS (5 CONNECTED STAGES) ================= */}
+        {/* ================= 3. HOW IT WORKS (PROMPT SECTION 09) ================= */}
         <View style={styles.howItWorksSection} id="how-it-works" testID="askme-reveal">
           <View style={styles.sectionHeader}>
             <View style={styles.sectionEyebrowBadge}>
               <Text style={styles.sectionEyebrowText}>STATUTORY ROUTING PIPELINE</Text>
             </View>
             <Text style={styles.sectionTitle}>
-              How <Text style={{ color: '#F47738' }}>ASKME</Text> Works
+              From Problem to <Text style={{ color: '#FF7135' }}>Action.</Text>
             </Text>
             <Text style={styles.sectionSubtitle}>
-              From neighborhood hazard to verified statutory submission in five seamless steps.
+              Turning everyday civic problems into structured, actionable petitions.
             </Text>
           </View>
 
-          {/* Dynamic Illuminated Circuit Track */}
+          {/* Dynamic Laser Pulse Circuit Track */}
           <View style={styles.circuitTrackWrapper}>
             <View
               style={styles.circuitTrackFill}
@@ -229,243 +254,306 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
           </View>
 
           <View style={styles.stagesPipeline}>
-            {/* Step 1: Report */}
+            {/* Step 1: Capture Evidence */}
             <View style={styles.stageCard} testID="askme-reveal">
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
-                  <Camera size={17} color="#F47738" />
+                  <Camera size={17} color="#FF7135" />
                 </View>
                 <Text style={styles.stageStepNumber}>01</Text>
               </View>
-              <Text style={styles.stageTitle}>Report</Text>
+              <Text style={styles.stageTitle}>Capture Evidence</Text>
               <Text style={styles.stageDesc}>
-                Capture photo evidence with EXIF GPS, speak in any Indian language, or write a short note.
+                Provide photographic evidence with EXIF GPS, record acoustic voice in your regional language, or type what happened.
               </Text>
               <View style={styles.stageAccentBar} />
             </View>
 
             <View style={styles.pipelineArrow}>
-              <ArrowRight size={13} color="#5C5852" />
+              <ArrowRight size={13} color="#77736F" />
             </View>
 
-            {/* Step 2: Analyze */}
+            {/* Step 2: Detect Location */}
             <View style={styles.stageCard} testID="askme-reveal">
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
-                  <Sparkles size={17} color="#F47738" />
+                  <MapPin size={17} color="#FF7135" />
                 </View>
                 <Text style={styles.stageStepNumber}>02</Text>
               </View>
-              <Text style={styles.stageTitle}>Analyze</Text>
+              <Text style={styles.stageTitle}>Detect Location</Text>
               <Text style={styles.stageDesc}>
-                Multimodal AI separates observed visual evidence from citizen facts and evaluates civic hazard severity.
+                Geospatial lock on the affected area, isolating physical incident coordinates from private residential addresses.
               </Text>
               <View style={styles.stageAccentBar} />
             </View>
 
             <View style={styles.pipelineArrow}>
-              <ArrowRight size={13} color="#5C5852" />
+              <ArrowRight size={13} color="#77736F" />
             </View>
 
-            {/* Step 3: Identify */}
+            {/* Step 3: AI Analysis */}
             <View style={styles.stageCard} testID="askme-reveal">
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
-                  <Search size={17} color="#F47738" />
+                  <Sparkles size={17} color="#FF7135" />
                 </View>
                 <Text style={styles.stageStepNumber}>03</Text>
               </View>
-              <Text style={styles.stageTitle}>Identify</Text>
+              <Text style={styles.stageTitle}>AI Analysis</Text>
               <Text style={styles.stageDesc}>
-                Matches exact municipal ward, zonal engineer, or national highway division with 100% boundary accuracy.
+                Dual-engine visual classification evaluates severity, structural hazard, and citizen claims into verified facts.
               </Text>
               <View style={styles.stageAccentBar} />
             </View>
 
             <View style={styles.pipelineArrow}>
-              <ArrowRight size={13} color="#5C5852" />
+              <ArrowRight size={13} color="#77736F" />
             </View>
 
-            {/* Step 4: Generate */}
+            {/* Step 4: Verify Authority */}
             <View style={styles.stageCard} testID="askme-reveal">
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
-                  <FileText size={17} color="#F47738" />
+                  <Search size={17} color="#FF7135" />
                 </View>
                 <Text style={styles.stageStepNumber}>04</Text>
               </View>
-              <Text style={styles.stageTitle}>Generate</Text>
+              <Text style={styles.stageTitle}>Verify Authority</Text>
               <Text style={styles.stageDesc}>
-                Drafts a formal, legally enforceable grievance petition citing specific municipal acts and Article 21.
+                Resolves exact municipal ward, zonal engineer, NHAI division, or Indian Railways jurisdiction with 100% boundary accuracy.
               </Text>
               <View style={styles.stageAccentBar} />
             </View>
 
             <View style={styles.pipelineArrow}>
-              <ArrowRight size={13} color="#5C5852" />
+              <ArrowRight size={13} color="#77736F" />
             </View>
 
-            {/* Step 5: Send */}
+            {/* Step 5: Generate Petition */}
             <View style={styles.stageCard} testID="askme-reveal">
               <View style={styles.stageHeaderRow}>
                 <View style={styles.stageIconBox}>
-                  <Send size={17} color="#F47738" />
+                  <FileText size={17} color="#FF7135" />
                 </View>
                 <Text style={styles.stageStepNumber}>05</Text>
               </View>
-              <Text style={styles.stageTitle}>Dispatch</Text>
+              <Text style={styles.stageTitle}>Generate Petition</Text>
               <Text style={styles.stageDesc}>
-                Transparent submission directly to verified portals (CPGRAMS, Swachhata, BBMP, GCC, or NHAI).
+                Drafts a formal, legally enforceable grievance petition citing Section 133 CrPC, RTI Act, and official portal routing.
               </Text>
               <View style={styles.stageAccentBar} />
             </View>
           </View>
         </View>
 
-        {/* ================= 3. REPORT IT YOUR WAY (3-CARD BENTO) ================= */}
-        <View style={styles.reportYourWaySection} id="report-your-way" testID="askme-reveal">
+        {/* ================= 4. FEATURES SECTION — ASYMMETRIC BENTO GRID (PROMPT SECTION 10) ================= */}
+        <View style={styles.featuresSection} id="features" testID="askme-reveal">
           <View style={styles.sectionHeader}>
             <View style={styles.sectionEyebrowBadge}>
-              <Text style={styles.sectionEyebrowText}>MULTIMODAL EVIDENCE ENGINE</Text>
+              <Text style={styles.sectionEyebrowText}>SYSTEM CAPABILITIES</Text>
             </View>
             <Text style={styles.sectionTitle}>
-              Report It <Text style={{ color: '#F47738' }}>Your Way</Text>
+              Engineered for <Text style={{ color: '#FF7135' }}>Civic Impact.</Text>
             </Text>
             <Text style={styles.sectionSubtitle}>
-              Every citizen expresses differently. Upload a photo, speak in your language, or type what happened.
+              Every feature designed to give citizens the precision and statutory backing of an institutional liaison.
             </Text>
           </View>
 
-          <View style={styles.bentoRow}>
-            {/* Card 1: Photo */}
-            <TouchableOpacity
-              style={styles.methodCard}
-              onPress={handleStart}
-              activeOpacity={0.88}
-              testID="askme-reveal"
-              {...(Platform.OS === 'web' ? { 'data-reveal': 'left' } as any : {})}
-            >
-              <View>
-                <View style={styles.methodCardHeader}>
-                  <View style={styles.methodIconCircle}>
-                    <Camera size={19} color="#FFFFFF" />
+          {/* Asymmetric Bento Architecture */}
+          <View style={styles.bentoContainer}>
+            {/* Row 1: Wide Card (Multimodal Capture) + Compact Card (Location Radar) */}
+            <View style={styles.bentoRow}>
+              {/* Bento 1: Multimodal Evidence Capture (Wide) */}
+              <TouchableOpacity
+                style={[styles.bentoCard, styles.bentoCardWide]}
+                onPress={handleStart}
+                activeOpacity={0.88}
+                testID="askme-reveal"
+                {...(Platform.OS === 'web' ? { 'data-reveal': 'left' } as any : {})}
+              >
+                <View style={styles.bentoHeaderRow}>
+                  <View style={styles.bentoIconBox}>
+                    <Camera size={18} color="#FF7135" />
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.methodCardTitle}>Photo Evidence</Text>
-                    <Text style={styles.methodCardSub}>Visual inspection & EXIF location</Text>
-                  </View>
-                </View>
-
-                <View style={styles.methodPreviewArea}>
-                  <View style={styles.mockViewfinder}>
-                    <View style={styles.viewfinderCornerTL} />
-                    <View style={styles.viewfinderCornerTR} />
-                    <View style={styles.viewfinderCornerBL} />
-                    <View style={styles.viewfinderCornerBR} />
-                    <View style={styles.crosshair} />
-                    <Text style={styles.mockViewfinderText}>EXIF GPS AUTO-DETECTION</Text>
+                  <View style={styles.bentoTag}>
+                    <Text style={styles.bentoTagText}>MULTIMODAL EVIDENCE</Text>
                   </View>
                 </View>
-              </View>
+                <Text style={styles.bentoTitle}>Multimodal Evidence Capture</Text>
+                <Text style={styles.bentoDesc}>
+                  Combine photographs, regional voice recordings in your native language, or typed statements. AskMe blends all inputs into a single verified complaint dossier.
+                </Text>
 
-              <View style={styles.cardFooterAction}>
-                <Text style={styles.cardActionLabel}>Upload Evidence</Text>
-                <View style={styles.circleActionArrow}>
-                  <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            {/* Card 2: Voice */}
-            <TouchableOpacity
-              style={styles.methodCard}
-              onPress={handleStart}
-              activeOpacity={0.88}
-              testID="askme-reveal"
-              {...(Platform.OS === 'web' ? { 'data-reveal': 'scale' } as any : {})}
-            >
-              <View>
-                <View style={styles.methodCardHeader}>
-                  <View style={[styles.methodIconCircle, styles.voiceActiveGlow]}>
-                    <Mic size={19} color="#F47738" />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.methodCardTitle}>Acoustic Voice</Text>
-                    <Text style={styles.methodCardSub}>Speak in your mother tongue</Text>
-                  </View>
-                </View>
-
-                <View style={styles.methodPreviewArea}>
-                  <View style={styles.mockWaveform}>
-                    {[10, 24, 38, 16, 32, 46, 20, 36, 14, 28, 42, 18, 30].map((h, i) => (
-                      <View
-                        key={i}
-                        style={[
-                          styles.waveBar,
-                          { height: h, backgroundColor: i % 2 === 0 ? '#F47738' : '#FF7A45' },
-                        ]}
-                      />
-                    ))}
-                  </View>
-                  <Text style={styles.waveformLanguageBadge}>
-                    Tamil • Hindi • English • Telugu • Kannada
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.cardFooterAction}>
-                <Text style={styles.cardActionLabel}>Speak in Native Language</Text>
-                <View style={styles.circleActionArrow}>
-                  <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            {/* Card 3: Text */}
-            <TouchableOpacity
-              style={styles.methodCard}
-              onPress={handleStart}
-              activeOpacity={0.88}
-              testID="askme-reveal"
-              {...(Platform.OS === 'web' ? { 'data-reveal': 'right' } as any : {})}
-            >
-              <View>
-                <View style={styles.methodCardHeader}>
-                  <View style={styles.methodIconCircle}>
-                    <FileText size={19} color="#FFFFFF" />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.methodCardTitle}>Text Summary</Text>
-                    <Text style={styles.methodCardSub}>Describe in your own words</Text>
-                  </View>
-                </View>
-
-                <View style={styles.methodPreviewArea}>
-                  <View style={styles.mockNote}>
-                    <Text style={styles.mockNoteText}>
-                      "Severe waterlogging and open manhole near Main Road intersection creating hazardous pedestrian conditions..."
-                    </Text>
-                    <View style={styles.mockNoteBadge}>
-                      <Text style={styles.mockNoteBadgeText}>STATUTORY GROUNDING</Text>
+                {/* Interactive Visual Representation */}
+                <View style={styles.bentoVisualSlot}>
+                  <View style={styles.visualModalityRow}>
+                    <View style={styles.modalityChip}>
+                      <Camera size={11} color="#FF7135" />
+                      <Text style={styles.modalityChipText}>EXIF GPS Photo</Text>
+                    </View>
+                    <View style={styles.modalityChip}>
+                      <Mic size={11} color="#38D982" />
+                      <Text style={styles.modalityChipText}>Acoustic Speech</Text>
+                    </View>
+                    <View style={styles.modalityChip}>
+                      <FileText size={11} color="#A6A39E" />
+                      <Text style={styles.modalityChipText}>Verified Text</Text>
                     </View>
                   </View>
                 </View>
+              </TouchableOpacity>
+
+              {/* Bento 2: Intelligent Location Detection & Tactical GIS Radar (Compact) */}
+              <TouchableOpacity
+                style={[styles.bentoCard, styles.bentoCardCompact]}
+                onPress={handleStart}
+                activeOpacity={0.88}
+                testID="askme-reveal"
+                {...(Platform.OS === 'web' ? { 'data-reveal': 'right' } as any : {})}
+              >
+                <View style={styles.bentoHeaderRow}>
+                  <View style={styles.bentoIconBox}>
+                    <MapPin size={18} color="#38D982" />
+                  </View>
+                  <View style={[styles.bentoTag, { borderColor: 'rgba(56, 217, 130, 0.3)' }]}>
+                    <Text style={[styles.bentoTagText, { color: '#38D982' }]}>GIS RADAR</Text>
+                  </View>
+                </View>
+                <Text style={styles.bentoTitle}>Intelligent Location Detection</Text>
+                <Text style={styles.bentoDesc}>
+                  Locks coordinates against statutory municipal boundaries so your grievance never gets rejected for wrong jurisdiction.
+                </Text>
+
+                <View style={styles.bentoVisualSlot}>
+                  <View style={styles.radarVisualRow}>
+                    <View style={styles.liveGreenDot} />
+                    <Text style={styles.radarVisualText}>19+ MUNICIPAL BOUNDARIES LOCKED</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Row 2: Compact Card (Problem Classification) + Wide Card (Statutory Jurisdiction Matching) */}
+            <View style={styles.bentoRow}>
+              {/* Bento 3: AI-Powered Problem Classification (Compact) */}
+              <TouchableOpacity
+                style={[styles.bentoCard, styles.bentoCardCompact]}
+                onPress={handleStart}
+                activeOpacity={0.88}
+                testID="askme-reveal"
+                {...(Platform.OS === 'web' ? { 'data-reveal': 'left' } as any : {})}
+              >
+                <View style={styles.bentoHeaderRow}>
+                  <View style={styles.bentoIconBox}>
+                    <Sparkles size={18} color="#FF7135" />
+                  </View>
+                  <View style={styles.bentoTag}>
+                    <Text style={styles.bentoTagText}>CV & NLP REASONING</Text>
+                  </View>
+                </View>
+                <Text style={styles.bentoTitle}>AI-Powered Classification</Text>
+                <Text style={styles.bentoDesc}>
+                  Evaluates hazardous asphalt damage, drainage overflows, and street light outages with high-confidence civic severity scoring.
+                </Text>
+
+                <View style={styles.bentoVisualSlot}>
+                  <View style={styles.classificationBarRow}>
+                    <Text style={styles.classLabel}>Severity Index</Text>
+                    <View style={styles.classTrack}>
+                      <View style={styles.classFillHigh} />
+                    </View>
+                    <Text style={styles.classScore}>98.4% Match</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              {/* Bento 4: Statutory Jurisdiction Matching (Wide Accent Card) */}
+              <TouchableOpacity
+                style={[styles.bentoCard, styles.bentoCardWide, styles.bentoCardAccent]}
+                onPress={handleStart}
+                activeOpacity={0.88}
+                testID="askme-reveal"
+                {...(Platform.OS === 'web' ? { 'data-reveal': 'right' } as any : {})}
+              >
+                <View style={styles.bentoHeaderRow}>
+                  <View style={[styles.bentoIconBox, { backgroundColor: '#FF7135' }]}>
+                    <Building2 size={18} color="#FFFFFF" />
+                  </View>
+                  <View style={[styles.bentoTag, { backgroundColor: 'rgba(255, 113, 53, 0.15)', borderColor: '#FF7135' }]}>
+                    <Text style={[styles.bentoTagText, { color: '#FF7135' }]}>19+ STATUTORY BODIES</Text>
+                  </View>
+                </View>
+                <Text style={styles.bentoTitle}>Statutory Jurisdiction Matching</Text>
+                <Text style={styles.bentoDesc}>
+                  Automatically routes between Municipal Corporations (GCC, BBMP, NDMC, BMC, GHMC, KMC), National Highways Authority (NHAI), and Indian Railways RailMadad.
+                </Text>
+
+                <View style={styles.bentoVisualSlot}>
+                  <View style={styles.authorityPillsRow}>
+                    <Text style={styles.authorityPill}>Greater Chennai Corporation</Text>
+                    <Text style={styles.authorityPill}>BBMP Bengaluru</Text>
+                    <Text style={styles.authorityPill}>NDMC Delhi</Text>
+                    <Text style={styles.authorityPill}>NHAI Highways</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Row 3: 4 Equal Grid Capabilities */}
+            <View style={styles.bentoQuadRow}>
+              {/* Bento 5: Legal Petition Generation */}
+              <View style={styles.bentoQuadCard} testID="askme-reveal">
+                <View style={styles.bentoIconBox}>
+                  <FileText size={16} color="#FF7135" />
+                </View>
+                <Text style={styles.bentoQuadTitle}>Legal Petition Generation</Text>
+                <Text style={styles.bentoQuadDesc}>
+                  Incorporates Section 133 CrPC, RTI Act, and Citizen Charter statutory clauses into an official enforceable draft.
+                </Text>
               </View>
 
-              <View style={styles.cardFooterAction}>
-                <Text style={styles.cardActionLabel}>Write Short Note</Text>
-                <View style={styles.circleActionArrow}>
-                  <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
+              {/* Bento 6: Complaint History & Citizen Vault */}
+              <View style={styles.bentoQuadCard} testID="askme-reveal">
+                <View style={styles.bentoIconBox}>
+                  <Database size={16} color="#38D982" />
                 </View>
+                <Text style={styles.bentoQuadTitle}>Encrypted Citizen Vault</Text>
+                <Text style={styles.bentoQuadDesc}>
+                  Stores complaint tracking references, official authority responses, and downloadable statutory PDF dossiers on device.
+                </Text>
               </View>
-            </TouchableOpacity>
+
+              {/* Bento 7: Real-Time Telemetry Terminal */}
+              <View style={styles.bentoQuadCard} testID="askme-reveal">
+                <View style={styles.bentoIconBox}>
+                  <Activity size={16} color="#FF8A50" />
+                </View>
+                <Text style={styles.bentoQuadTitle}>Real-Time Telemetry</Text>
+                <Text style={styles.bentoQuadDesc}>
+                  Live streaming terminal telemetry visualizing neural reasoning steps and authority matching confidence.
+                </Text>
+              </View>
+
+              {/* Bento 8: Responsive Citizen Interface */}
+              <View style={styles.bentoQuadCard} testID="askme-reveal">
+                <View style={styles.bentoIconBox}>
+                  <Smartphone size={16} color="#3B82F6" />
+                </View>
+                <Text style={styles.bentoQuadTitle}>Responsive Interface</Text>
+                <Text style={styles.bentoQuadDesc}>
+                  Native 120fps fluid scrolling, zero layout shifts, and accessible contrast engineered for mobile and desktop.
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
 
-        {/* ================= 4. CINEMATIC CLOSING BANNER ================= */}
+        {/* ================= 5. CINEMATIC CLOSING BANNER ================= */}
         <View style={styles.closingBanner} testID="askme-reveal">
           <View style={styles.closingAmbientGlow} />
-          <AskMeLogo size={64} showText={false} animated={true} />
+          <AskMeLogo size={58} showText={false} animated={true} />
           <Text style={styles.closingHeadline}>
             Your Voice Deserves to Be Heard.
           </Text>
@@ -476,17 +564,17 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
             style={styles.closingCta}
             onPress={handleStart}
             accessibilityRole="button"
-            accessibilityLabel="Start your grievance complaint"
+            accessibilityLabel="Report a problem"
             activeOpacity={0.88}
           >
-            <Text style={styles.closingCtaText}>Start Your Complaint</Text>
+            <Text style={styles.closingCtaText}>Report a Problem</Text>
             <View style={styles.closingArrowCircle}>
-              <ArrowRight size={15} color="#FFFFFF" strokeWidth={2.6} />
+              <ArrowRight size={14} color="#FFFFFF" strokeWidth={2.8} />
             </View>
           </TouchableOpacity>
         </View>
 
-        {/* ================= 5. MINIMAL DECLASSIFIED FOOTER ================= */}
+        {/* ================= 6. MINIMAL DECLASSIFIED FOOTER ================= */}
         <Footer
           onNavigateHome={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}
           onNavigateHowItWorks={scrollToHowItWorks}
@@ -495,7 +583,7 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
       </ScrollView>
 
       {/* Floating Back-to-Top Button */}
-      {scrollY > 380 && (
+      {showBackToTop && (
         <TouchableOpacity
           style={styles.floatingBackToTop}
           onPress={scrollToTop}
@@ -515,7 +603,26 @@ const styles = StyleSheet.create({
   outerWrapper: {
     flex: 1,
     position: 'relative',
-    backgroundColor: '#0D0D0C',
+    backgroundColor: '#0A0A09',
+  },
+  desktopGridLines: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: '50%',
+    width: '100%',
+    maxWidth: 1200,
+    transform: [{ translateX: '-50%' } as any],
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    pointerEvents: 'none',
+    zIndex: 1,
+  },
+  gridLine: {
+    width: 1,
+    height: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.025)',
   },
   topProgressTrack: {
     position: 'absolute',
@@ -528,43 +635,46 @@ const styles = StyleSheet.create({
   },
   topProgressBar: {
     height: '100%',
-    backgroundColor: '#F47738',
+    backgroundColor: '#FF7135',
     borderRadius: 1.5,
     ...(Platform.OS === 'web'
       ? {
-          background: 'linear-gradient(90deg, #F47738, #FF6652, #FFAA5C)',
-          boxShadow: '0 0 10px rgba(244, 119, 56, 0.8)',
+          backgroundImage: 'linear-gradient(90deg, #FF7135, #FF8A50, #FFAE68)',
+          boxShadow: '0 0 10px rgba(255, 113, 53, 0.8)',
           transition: 'width 0.1s linear',
         }
       : {}),
   },
   container: {
     flex: 1,
-    backgroundColor: '#0D0D0C',
+    backgroundColor: '#0A0A09',
   },
   content: {
     paddingBottom: 0,
   },
+
+  /* Hero Section */
   heroSection: {
     paddingHorizontal: 24,
-    paddingTop: 36,
+    paddingTop: 40,
     paddingBottom: 48,
     maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
     position: 'relative',
+    zIndex: 2,
   },
   heroAmbientGlow: {
     position: 'absolute',
-    top: -40,
+    top: -50,
     left: '10%',
-    width: 600,
-    height: 480,
+    width: 650,
+    height: 520,
     borderRadius: 300,
-    backgroundColor: 'rgba(244, 119, 56, 0.08)',
+    backgroundColor: 'rgba(255, 113, 53, 0.08)',
     ...(Platform.OS === 'web'
       ? {
-          filter: 'blur(90px)',
+          filter: 'blur(95px)',
           pointerEvents: 'none',
         }
       : {}),
@@ -587,13 +697,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.035)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.09)',
     borderRadius: THEME.radii.pill,
-    paddingVertical: 5,
+    paddingVertical: 6,
     paddingHorizontal: 12,
-    marginBottom: 22,
+    marginBottom: 24,
     ...(Platform.OS === 'web'
       ? {
           backdropFilter: 'blur(12px)',
@@ -604,70 +714,62 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 3.5,
-    backgroundColor: '#22C55E',
+    backgroundColor: '#38D982',
   },
   heroStatusText: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#E8E5DF',
+    color: '#F7F7F5',
     letterSpacing: 0.8,
     fontFamily: THEME.fonts.mono,
   },
-  statusDivider: {
-    width: 1,
-    height: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  heroStatusLive: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#F47738',
-    letterSpacing: 0.6,
-    fontFamily: THEME.fonts.mono,
-  },
   heroHeadline: {
-    fontSize: Platform.OS === 'web' ? 56 : 38,
+    fontSize: Platform.OS === 'web' ? 68 : 40,
     fontWeight: '900',
-    color: '#FFFFFF',
-    lineHeight: Platform.OS === 'web' ? 62 : 44,
-    letterSpacing: -1.6,
-    marginBottom: 20,
-    fontFamily: Platform.OS === 'web' ? 'Sora, Space Grotesk, sans-serif' : undefined,
+    color: '#F7F7F5',
+    lineHeight: Platform.OS === 'web' ? 74 : 46,
+    letterSpacing: -1.8,
+    marginBottom: 22,
+    fontFamily: THEME.fonts.heading,
   },
   heroHeadlineOrange: {
-    color: '#F47738',
+    color: '#FF7135',
   },
   heroSubtext: {
     fontSize: 16,
-    color: '#A8A49D',
-    lineHeight: 27,
-    marginBottom: 32,
-    maxWidth: 500,
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    color: '#A6A39E',
+    lineHeight: 26,
+    marginBottom: 34,
+    maxWidth: 520,
+    fontFamily: THEME.fonts.body,
   },
   heroCtaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    marginBottom: 30,
+    marginBottom: 32,
     flexWrap: 'wrap',
   },
   primaryReportBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: '#F47738',
+    backgroundColor: '#FF7135',
     paddingVertical: 14,
     paddingLeft: 26,
-    paddingRight: 14,
+    paddingRight: 12,
     borderRadius: THEME.radii.pill,
-    shadowColor: '#F47738',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#FF7135',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.5,
     shadowRadius: 20,
     elevation: 8,
     ...(Platform.OS === 'web'
       ? {
+          backgroundImage: 'linear-gradient(135deg, #FF7135 0%, #FF8A50 100%)',
+          boxShadow: '0 8px 24px rgba(255, 113, 53, 0.45)',
           transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
           cursor: 'pointer',
         }
@@ -678,13 +780,13 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: 0.2,
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    fontFamily: THEME.fonts.heading,
   },
   primaryArrowCircle: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: 'rgba(0, 0, 0, 0.24)',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -692,14 +794,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    paddingVertical: 13,
+    backgroundColor: 'rgba(255, 255, 255, 0.035)',
+    paddingVertical: 14,
     paddingHorizontal: 22,
     borderRadius: THEME.radii.pill,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.09)',
     ...(Platform.OS === 'web'
       ? {
+          backdropFilter: 'blur(12px)',
           transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
           cursor: 'pointer',
         }
@@ -708,14 +811,14 @@ const styles = StyleSheet.create({
   discoverBtnText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#FFFFFF',
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    color: '#F7F7F5',
+    fontFamily: THEME.fonts.heading,
   },
   playIconCircle: {
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -733,8 +836,8 @@ const styles = StyleSheet.create({
   trustItemText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#8E8A83',
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    color: '#A6A39E',
+    fontFamily: THEME.fonts.body,
   },
   trustDot: {
     width: 3,
@@ -750,6 +853,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     zIndex: 2,
   },
+
+  /* Statistics Section */
   statsStrip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -757,16 +862,16 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 16,
     marginTop: 48,
-    paddingVertical: 22,
+    paddingVertical: 24,
     paddingHorizontal: 28,
-    backgroundColor: 'rgba(18, 18, 17, 0.85)',
+    backgroundColor: 'rgba(17, 17, 15, 0.85)',
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(255, 255, 255, 0.09)',
     ...(Platform.OS === 'web'
       ? {
-          backdropFilter: 'blur(20px)',
-          boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.7)',
+          backdropFilter: 'blur(18px)',
+          boxShadow: '0 18px 40px -10px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.08)',
         }
       : {}),
   },
@@ -776,23 +881,23 @@ const styles = StyleSheet.create({
     minWidth: 120,
   },
   statNumber: {
-    fontSize: 30,
+    fontSize: 32,
     fontWeight: '900',
-    color: '#FFFFFF',
-    letterSpacing: -0.8,
-    fontFamily: Platform.OS === 'web' ? 'Sora, sans-serif' : undefined,
+    color: '#F7F7F5',
+    letterSpacing: -1,
+    fontFamily: THEME.fonts.heading,
   },
   statLabel: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#E8E5DF',
+    color: '#F7F7F5',
     marginTop: 2,
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    fontFamily: THEME.fonts.heading,
   },
   statMicro: {
     fontSize: 10,
     fontWeight: '500',
-    color: '#77736E',
+    color: '#77736F',
     marginTop: 2,
     fontFamily: THEME.fonts.mono,
   },
@@ -801,9 +906,11 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
+
+  /* How It Works Section */
   howItWorksSection: {
     paddingHorizontal: 24,
-    paddingVertical: 72,
+    paddingVertical: 80,
     maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
@@ -816,9 +923,9 @@ const styles = StyleSheet.create({
     marginBottom: 48,
   },
   sectionEyebrowBadge: {
-    backgroundColor: 'rgba(244, 119, 56, 0.12)',
+    backgroundColor: 'rgba(255, 113, 53, 0.12)',
     borderWidth: 1,
-    borderColor: 'rgba(244, 119, 56, 0.28)',
+    borderColor: 'rgba(255, 113, 53, 0.28)',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: THEME.radii.pill,
@@ -827,25 +934,45 @@ const styles = StyleSheet.create({
   sectionEyebrowText: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#F47738',
+    color: '#FF7135',
     letterSpacing: 1,
     fontFamily: THEME.fonts.mono,
   },
   sectionTitle: {
-    fontSize: Platform.OS === 'web' ? 36 : 28,
+    fontSize: Platform.OS === 'web' ? 42 : 30,
     fontWeight: '900',
-    color: '#FFFFFF',
-    letterSpacing: -1,
+    color: '#F7F7F5',
+    letterSpacing: -1.2,
     marginBottom: 12,
-    fontFamily: Platform.OS === 'web' ? 'Sora, sans-serif' : undefined,
+    fontFamily: THEME.fonts.heading,
   },
   sectionSubtitle: {
-    fontSize: 15,
-    color: '#A8A49D',
+    fontSize: 16,
+    color: '#A6A39E',
     textAlign: 'center',
     maxWidth: 620,
-    lineHeight: 24,
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    lineHeight: 25,
+    fontFamily: THEME.fonts.body,
+  },
+  circuitTrackWrapper: {
+    width: '100%',
+    height: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderRadius: 1.5,
+    marginBottom: 24,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  circuitTrackFill: {
+    height: '100%',
+    backgroundColor: '#FF7135',
+    borderRadius: 1.5,
+    ...(Platform.OS === 'web'
+      ? {
+          backgroundImage: 'linear-gradient(90deg, #FF7135, #FF8A50, #FFAE68)',
+          boxShadow: '0 0 12px rgba(255, 113, 53, 0.9)',
+        }
+      : {}),
   },
   stagesPipeline: {
     flexDirection: 'row',
@@ -857,16 +984,17 @@ const styles = StyleSheet.create({
   stageCard: {
     flex: 1,
     minWidth: 180,
-    backgroundColor: 'rgba(20, 20, 18, 0.85)',
+    backgroundColor: 'rgba(17, 17, 15, 0.85)',
     borderRadius: 18,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(255, 255, 255, 0.09)',
     position: 'relative',
     overflow: 'hidden',
     justifyContent: 'space-between',
     ...(Platform.OS === 'web'
       ? {
+          backdropFilter: 'blur(12px)',
           transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
           boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.5)',
         }
@@ -882,37 +1010,37 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: 'rgba(244, 119, 56, 0.12)',
+    backgroundColor: 'rgba(255, 113, 53, 0.12)',
     borderWidth: 1,
-    borderColor: 'rgba(244, 119, 56, 0.3)',
+    borderColor: 'rgba(255, 113, 53, 0.28)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   stageStepNumber: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#F47738',
+    color: '#FF7135',
     fontFamily: THEME.fonts.mono,
     letterSpacing: 0.5,
   },
   stageTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#F7F7F5',
     marginBottom: 6,
-    fontFamily: Platform.OS === 'web' ? 'Sora, sans-serif' : undefined,
+    fontFamily: THEME.fonts.heading,
   },
   stageDesc: {
     fontSize: 12,
-    color: '#8E8A83',
+    color: '#A6A39E',
     lineHeight: 18,
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    fontFamily: THEME.fonts.body,
     marginBottom: 14,
   },
   stageAccentBar: {
     height: 2,
     width: 24,
-    backgroundColor: 'rgba(244, 119, 56, 0.4)',
+    backgroundColor: 'rgba(255, 113, 53, 0.45)',
     borderRadius: 1,
   },
   pipelineArrow: {
@@ -920,216 +1048,222 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 2,
   },
-  reportYourWaySection: {
+
+  /* Features Section (Bento Grid) */
+  featuresSection: {
     paddingHorizontal: 24,
-    paddingVertical: 72,
+    paddingVertical: 80,
     maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.06)',
   },
+  bentoContainer: {
+    gap: 18,
+  },
   bentoRow: {
     flexDirection: Platform.OS === 'web' ? 'row' : 'column',
-    gap: 22,
+    gap: 18,
   },
-  methodCard: {
-    flex: 1,
-    backgroundColor: 'rgba(20, 20, 18, 0.85)',
+  bentoCard: {
+    backgroundColor: 'rgba(17, 17, 15, 0.85)',
     borderRadius: 22,
     padding: 24,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(255, 255, 255, 0.09)',
     justifyContent: 'space-between',
-    minHeight: 310,
+    minHeight: 250,
     position: 'relative',
     overflow: 'hidden',
     ...(Platform.OS === 'web'
       ? {
+          backdropFilter: 'blur(16px)',
           transition: 'all 0.24s cubic-bezier(0.16, 1, 0.3, 1)',
           cursor: 'pointer',
-          boxShadow: '0 12px 32px -6px rgba(0, 0, 0, 0.6)',
+          boxShadow: '0 12px 32px -6px rgba(0, 0, 0, 0.65)',
         }
       : {}),
   },
-  methodCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    marginBottom: 18,
+  bentoCardWide: {
+    flex: 1.5,
   },
-  methodIconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.07)',
-    alignItems: 'center',
-    justifyContent: 'center',
+  bentoCardCompact: {
+    flex: 1,
+  },
+  bentoCardAccent: {
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 113, 53, 0.35)',
   },
-  voiceActiveGlow: {
-    backgroundColor: 'rgba(244, 119, 56, 0.14)',
-    borderColor: 'rgba(244, 119, 56, 0.4)',
-  },
-  methodCardTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    fontFamily: Platform.OS === 'web' ? 'Sora, sans-serif' : undefined,
-  },
-  methodCardSub: {
-    fontSize: 12,
-    color: '#8E8A83',
-    marginTop: 2,
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
-  },
-  methodPreviewArea: {
-    minHeight: 110,
-    backgroundColor: '#121210',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 14,
-    marginBottom: 20,
-    position: 'relative',
-  },
-  mockViewfinder: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-    paddingVertical: 12,
-  },
-  viewfinderCornerTL: {
-    position: 'absolute',
-    top: 0,
-    left: 4,
-    width: 8,
-    height: 8,
-    borderTopWidth: 2,
-    borderLeftWidth: 2,
-    borderColor: '#F47738',
-  },
-  viewfinderCornerTR: {
-    position: 'absolute',
-    top: 0,
-    right: 4,
-    width: 8,
-    height: 8,
-    borderTopWidth: 2,
-    borderRightWidth: 2,
-    borderColor: '#F47738',
-  },
-  viewfinderCornerBL: {
-    position: 'absolute',
-    bottom: 0,
-    left: 4,
-    width: 8,
-    height: 8,
-    borderBottomWidth: 2,
-    borderLeftWidth: 2,
-    borderColor: '#F47738',
-  },
-  viewfinderCornerBR: {
-    position: 'absolute',
-    bottom: 0,
-    right: 4,
-    width: 8,
-    height: 8,
-    borderBottomWidth: 2,
-    borderRightWidth: 2,
-    borderColor: '#F47738',
-  },
-  crosshair: {
-    width: 22,
-    height: 22,
-    borderWidth: 1.5,
-    borderColor: '#F47738',
-    borderRadius: 4,
-    marginBottom: 8,
-  },
-  mockViewfinderText: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: '#F47738',
-    letterSpacing: 1,
-    fontFamily: THEME.fonts.mono,
-  },
-  mockWaveform: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    height: 48,
-    marginBottom: 8,
-  },
-  waveBar: {
-    width: 4,
-    borderRadius: 2,
-  },
-  waveformLanguageBadge: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#8E8A83',
-    fontFamily: THEME.fonts.mono,
-  },
-  mockNote: {
-    width: '100%',
-    justifyContent: 'center',
-  },
-  mockNoteText: {
-    fontSize: 12,
-    color: '#A8A49D',
-    lineHeight: 18,
-    fontStyle: 'italic',
-    marginBottom: 8,
-  },
-  mockNoteBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  mockNoteBadgeText: {
-    fontSize: 8.5,
-    fontWeight: '800',
-    color: '#F47738',
-    fontFamily: THEME.fonts.mono,
-    letterSpacing: 0.8,
-  },
-  cardFooterAction: {
+  bentoHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.06)',
-    paddingTop: 16,
+    marginBottom: 16,
   },
-  cardActionLabel: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  circleActionArrow: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  bentoIconBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  bentoTag: {
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  bentoTagText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#A6A39E',
+    letterSpacing: 0.6,
+    fontFamily: THEME.fonts.mono,
+  },
+  bentoTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#F7F7F5',
+    marginBottom: 6,
+    fontFamily: THEME.fonts.heading,
+  },
+  bentoDesc: {
+    fontSize: 13,
+    color: '#A6A39E',
+    lineHeight: 20,
+    fontFamily: THEME.fonts.body,
+    marginBottom: 16,
+  },
+  bentoVisualSlot: {
+    marginTop: 'auto',
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.06)',
+  },
+  visualModalityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  modalityChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  modalityChipText: {
+    fontSize: 11,
+    color: '#F7F7F5',
+    fontWeight: '600',
+    fontFamily: THEME.fonts.body,
+  },
+  radarVisualRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  liveGreenDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#38D982',
+  },
+  radarVisualText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#38D982',
+    fontFamily: THEME.fonts.mono,
+  },
+  classificationBarRow: {
+    gap: 4,
+  },
+  classLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#77736F',
+    fontFamily: THEME.fonts.mono,
+  },
+  classTrack: {
+    height: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  classFillHigh: {
+    height: '100%',
+    width: '98%',
+    backgroundColor: '#FF7135',
+    borderRadius: 3,
+  },
+  classScore: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#FF7135',
+    fontFamily: THEME.fonts.mono,
+    alignSelf: 'flex-end',
+  },
+  authorityPillsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flexWrap: 'wrap',
+  },
+  authorityPill: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#A6A39E',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 4,
+  },
+  bentoQuadRow: {
+    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
+    gap: 16,
+  },
+  bentoQuadCard: {
+    flex: 1,
+    backgroundColor: 'rgba(17, 17, 15, 0.75)',
+    borderRadius: 18,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    gap: 8,
+  },
+  bentoQuadTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#F7F7F5',
+    fontFamily: THEME.fonts.heading,
+  },
+  bentoQuadDesc: {
+    fontSize: 12,
+    color: '#A6A39E',
+    lineHeight: 18,
+    fontFamily: THEME.fonts.body,
+  },
+
+  /* Closing Banner */
   closingBanner: {
     marginHorizontal: 24,
-    marginVertical: 56,
+    marginVertical: 64,
     padding: 56,
     borderRadius: 32,
-    backgroundColor: 'rgba(20, 20, 18, 0.92)',
+    backgroundColor: 'rgba(17, 17, 15, 0.94)',
     borderWidth: 1,
-    borderColor: 'rgba(244, 119, 56, 0.28)',
+    borderColor: 'rgba(255, 113, 53, 0.28)',
     alignItems: 'center',
     textAlign: 'center',
     maxWidth: 1060,
@@ -1140,7 +1274,7 @@ const styles = StyleSheet.create({
     ...(Platform.OS === 'web'
       ? {
           backdropFilter: 'blur(24px)',
-          boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(244, 119, 56, 0.08)',
+          boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 113, 53, 0.08)',
         }
       : {}),
   },
@@ -1150,7 +1284,7 @@ const styles = StyleSheet.create({
     width: 500,
     height: 300,
     borderRadius: 200,
-    backgroundColor: 'rgba(244, 119, 56, 0.12)',
+    backgroundColor: 'rgba(255, 113, 53, 0.12)',
     ...(Platform.OS === 'web'
       ? {
           filter: 'blur(90px)',
@@ -1159,40 +1293,44 @@ const styles = StyleSheet.create({
       : {}),
   },
   closingHeadline: {
-    fontSize: Platform.OS === 'web' ? 36 : 28,
+    fontSize: Platform.OS === 'web' ? 40 : 28,
     fontWeight: '900',
-    color: '#FFFFFF',
+    color: '#F7F7F5',
     marginTop: 24,
     marginBottom: 14,
     textAlign: 'center',
-    letterSpacing: -0.8,
-    fontFamily: Platform.OS === 'web' ? 'Sora, sans-serif' : undefined,
+    letterSpacing: -1,
+    fontFamily: THEME.fonts.heading,
   },
   closingSubtext: {
     fontSize: 15,
-    color: '#A8A49D',
+    color: '#A6A39E',
     textAlign: 'center',
     maxWidth: 620,
     lineHeight: 25,
     marginBottom: 36,
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    fontFamily: THEME.fonts.body,
   },
   closingCta: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: '#F47738',
+    backgroundColor: '#FF7135',
     paddingVertical: 15,
     paddingLeft: 30,
-    paddingRight: 16,
+    paddingRight: 14,
     borderRadius: THEME.radii.pill,
-    shadowColor: '#F47738',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#FF7135',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.5,
     shadowRadius: 20,
     elevation: 8,
     ...(Platform.OS === 'web'
       ? {
+          backgroundImage: 'linear-gradient(135deg, #FF7135 0%, #FF8A50 100%)',
+          boxShadow: '0 8px 24px rgba(255, 113, 53, 0.45)',
           transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
           cursor: 'pointer',
         }
@@ -1202,37 +1340,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '800',
     color: '#FFFFFF',
-    fontFamily: Platform.OS === 'web' ? 'Plus Jakarta Sans, sans-serif' : undefined,
+    fontFamily: THEME.fonts.heading,
   },
   closingArrowCircle: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: 'rgba(0, 0, 0, 0.24)',
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  circuitTrackWrapper: {
-    width: '100%',
-    height: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-    borderRadius: 1.5,
-    marginBottom: 24,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  circuitTrackFill: {
-    height: '100%',
-    backgroundColor: '#F47738',
-    borderRadius: 1.5,
-    ...(Platform.OS === 'web'
-      ? {
-          background: 'linear-gradient(90deg, #F47738, #FF6652, #FFAE68)',
-          boxShadow: '0 0 12px rgba(244, 119, 56, 0.9)',
-          transition: 'width 0.15s ease-out',
-        }
-      : {}),
-  },
+
+  /* Floating Back to Top Button */
   floatingBackToTop: {
     position: 'absolute',
     bottom: 28,
@@ -1245,7 +1364,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: THEME.radii.pill,
     borderWidth: 1,
-    borderColor: 'rgba(244, 119, 56, 0.4)',
+    borderColor: 'rgba(255, 113, 53, 0.4)',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.6,
@@ -1255,7 +1374,7 @@ const styles = StyleSheet.create({
     ...(Platform.OS === 'web'
       ? {
           cursor: 'pointer',
-          boxShadow: '0 12px 28px -4px rgba(0, 0, 0, 0.7), 0 0 15px rgba(244, 119, 56, 0.25)',
+          boxShadow: '0 12px 28px -4px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 113, 53, 0.25)',
           transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         }
       : {}),
