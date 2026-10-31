@@ -1,0 +1,10 @@
+{
+  "title": "ASKME Civic Action Summarization Dataset",
+  "id": "askme-civic-summaries",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0"
+    }
+  ],
+  "description": "High-quality paired dataset for fine-tuning lightweight Seq2Seq models (FLAN-T5, Qwen) to generate executive administrative summaries of civic complaint actions across Indian municipalities."
+}
