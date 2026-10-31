@@ -85,23 +85,51 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
       /* ================= ADVANCED SCROLL REVEAL & MICRO-INTERACTIONS ================= */
       [data-testid="askme-reveal"], .askme-reveal {
         opacity: 0;
-        transform: translateY(18px);
-        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(24px);
+        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
         will-change: opacity, transform;
+      }
+      [data-reveal="left"] {
+        transform: translateX(-32px) translateY(12px) !important;
+      }
+      [data-reveal="right"] {
+        transform: translateX(32px) translateY(12px) !important;
+      }
+      [data-reveal="scale"] {
+        transform: scale(0.92) translateY(16px) !important;
       }
       [data-testid="askme-reveal"].is-revealed, .askme-reveal.is-revealed {
         opacity: 1 !important;
-        transform: translateY(0) !important;
+        transform: translateY(0) translateX(0) scale(1) !important;
       }
+
       /* Staggered cascade for sibling elements */
       .stagesPipeline > *:nth-child(1) { transition-delay: 0.04s; }
-      .stagesPipeline > *:nth-child(2) { transition-delay: 0.10s; }
-      .stagesPipeline > *:nth-child(3) { transition-delay: 0.16s; }
-      .stagesPipeline > *:nth-child(4) { transition-delay: 0.22s; }
-      .stagesPipeline > *:nth-child(5) { transition-delay: 0.28s; }
-      .bentoRow > *:nth-child(1) { transition-delay: 0.06s; }
-      .bentoRow > *:nth-child(2) { transition-delay: 0.14s; }
-      .bentoRow > *:nth-child(3) { transition-delay: 0.22s; }
+      .stagesPipeline > *:nth-child(2) { transition-delay: 0.12s; }
+      .stagesPipeline > *:nth-child(3) { transition-delay: 0.20s; }
+      .stagesPipeline > *:nth-child(4) { transition-delay: 0.28s; }
+      .stagesPipeline > *:nth-child(5) { transition-delay: 0.36s; }
+      .bentoRow > *:nth-child(1) { transition-delay: 0.08s; }
+      .bentoRow > *:nth-child(2) { transition-delay: 0.18s; }
+      .bentoRow > *:nth-child(3) { transition-delay: 0.28s; }
+
+      @keyframes bounceCue {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(5px); }
+      }
+      .bounce-cue {
+        animation: bounceCue 1.6s ease-in-out infinite;
+      }
+
+      @keyframes liveLaserPulse {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+      }
+      .laser-pulse {
+        background: linear-gradient(90deg, #F47738, #FF6652, #FFAA5C, #F47738);
+        background-size: 200% auto;
+        animation: liveLaserPulse 3s linear infinite;
+      }
 
       @media (hover: hover) and (pointer: fine) {
         .primaryReportBtn:hover, .primaryCta:hover {

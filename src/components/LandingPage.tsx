@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   Platform,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import {
   ArrowRight,
@@ -18,6 +20,8 @@ import {
   Sparkles,
   ShieldCheck,
   CheckCircle2,
+  ChevronDown,
+  ArrowUp,
 } from 'lucide-react-native';
 import { THEME } from '../theme/tokens';
 import AskMeLogo from './AskMeLogo';
@@ -32,10 +36,27 @@ interface LandingPageProps {
 
 export default function LandingPage({ onStartReport }: LandingPageProps) {
   const scrollRef = useRef<ScrollView>(null);
+  const [scrollY, setScrollY] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const y = event.nativeEvent.contentOffset.y;
+    setScrollY(y);
+    const contentH = event.nativeEvent.contentSize.height;
+    const layoutH = event.nativeEvent.layoutMeasurement.height;
+    const maxScroll = Math.max(1, contentH - layoutH);
+    const progress = Math.min(1, Math.max(0, y / maxScroll));
+    setScrollProgress(progress);
+  };
 
   const scrollToHowItWorks = () => {
     soundFx.playClick();
     scrollRef.current?.scrollTo({ y: 700, animated: true });
+  };
+
+  const scrollToTop = () => {
+    soundFx.playClick();
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
   };
 
   const handleStart = () => {
@@ -43,410 +64,518 @@ export default function LandingPage({ onStartReport }: LandingPageProps) {
     onStartReport();
   };
 
+  // Parallax calculations
+  const heroParallax = Math.min(scrollY * 0.18, 60);
+
   return (
-    <ScrollView
-      ref={scrollRef}
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* ================= 1. ULTRA CINEMATIC HERO SECTION ================= */}
-      <View style={styles.heroSection}>
-        {/* Ambient Radial Glow Field */}
-        <View style={styles.heroAmbientGlow} />
-
-        <View style={styles.heroGrid}>
-          {/* Left Column: Headlines & Actions */}
-          <View style={styles.heroLeftCol}>
-            {/* Live Civic Network Status Pill */}
-            <View style={styles.heroStatusPill} testID="askme-reveal">
-              <View style={styles.livePulseDot} />
-              <Text style={styles.heroStatusText}>AI-POWERED CIVIC ACTION PLATFORM</Text>
-              <View style={styles.statusDivider} />
-              <Text style={styles.heroStatusLive}>19+ JURISDICTIONS LIVE</Text>
-            </View>
-
-            {/* Display Headline */}
-            <Text style={styles.heroHeadline} testID="askme-reveal">
-              Your City{'\n'}
-              Has a Problem.{'\n'}
-              Let's Make It{'\n'}
-              <Text style={styles.heroHeadlineOrange}>Heard.</Text>
-            </Text>
-
-            {/* Concise Supporting Subtitle */}
-            <Text style={styles.heroSubtext} testID="askme-reveal">
-              One photo, one voice, or one simple description. AskMe automatically resolves the exact statutory municipal jurisdiction and drafts an enforceable petition with legal citations in seconds.
-            </Text>
-
-            {/* Call to Actions */}
-            <View style={styles.heroCtaRow} testID="askme-reveal">
-              <TouchableOpacity
-                style={styles.primaryReportBtn}
-                onPress={handleStart}
-                accessibilityRole="button"
-                accessibilityLabel="Report a civic problem"
-                activeOpacity={0.88}
-              >
-                <Text style={styles.primaryReportBtnText}>Report a Problem</Text>
-                <View style={styles.primaryArrowCircle}>
-                  <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.8} />
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.discoverBtn}
-                onPress={scrollToHowItWorks}
-                accessibilityRole="button"
-                accessibilityLabel="Discover how ASKME works"
-                activeOpacity={0.8}
-              >
-                <Text style={styles.discoverBtnText}>Discover ASKME</Text>
-                <View style={styles.playIconCircle}>
-                  <Play size={10} color="#FFFFFF" fill="#FFFFFF" />
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            {/* Citizen Trust Accreditation Badges */}
-            <View style={styles.trustBadgeRow} testID="askme-reveal">
-              <View style={styles.trustItem}>
-                <CheckCircle2 size={13} color="#22C55E" />
-                <Text style={styles.trustItemText}>Statutory Verification</Text>
-              </View>
-              <View style={styles.trustDot} />
-              <View style={styles.trustItem}>
-                <ShieldCheck size={13} color="#F47738" />
-                <Text style={styles.trustItemText}>CPGRAMS & Swachhata Aligned</Text>
-              </View>
-              <View style={styles.trustDot} />
-              <View style={styles.trustItem}>
-                <Sparkles size={13} color="#FF6652" />
-                <Text style={styles.trustItemText}>100% Free & Open</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Right Column: Signature 3D Civic Signal Core with Orbiting Telemetry */}
-          <View style={styles.heroRightCol}>
-            <HeroIllustration />
-          </View>
-        </View>
-
-        {/* Bottom Metrics Ticker Strip */}
-        <View style={styles.statsStrip} testID="askme-reveal">
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>500K+</Text>
-            <Text style={styles.statLabel}>Complaints Filed</Text>
-            <Text style={styles.statMicro}>Citizen grievances resolved</Text>
-          </View>
-
-          <View style={styles.statDivider} />
-
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>200+</Text>
-            <Text style={styles.statLabel}>Cities Covered</Text>
-            <Text style={styles.statMicro}>Pan-India municipal coverage</Text>
-          </View>
-
-          <View style={styles.statDivider} />
-
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>95%</Text>
-            <Text style={styles.statLabel}>Resolution Rate</Text>
-            <Text style={styles.statMicro}>Statutory jurisdiction match</Text>
-          </View>
-
-          <View style={styles.statDivider} />
-
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>24×7</Text>
-            <Text style={styles.statLabel}>AI Assistance</Text>
-            <Text style={styles.statMicro}>On-device & edge reasoning</Text>
-          </View>
-        </View>
+    <View style={styles.outerWrapper}>
+      {/* 0. Top Laser Scroll Progress Bar */}
+      <View style={styles.topProgressTrack}>
+        <View
+          style={[
+            styles.topProgressBar,
+            { width: `${Math.max(2, scrollProgress * 100)}%` },
+          ]}
+        />
       </View>
 
-      {/* ================= 2. HOW ASKME WORKS (5 CONNECTED STAGES) ================= */}
-      <View style={styles.howItWorksSection} id="how-it-works" testID="askme-reveal">
-        <View style={styles.sectionHeader}>
-          <View style={styles.sectionEyebrowBadge}>
-            <Text style={styles.sectionEyebrowText}>STATUTORY ROUTING PIPELINE</Text>
+      <ScrollView
+        ref={scrollRef}
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
+        {/* ================= 1. ULTRA CINEMATIC HERO SECTION ================= */}
+        <View style={styles.heroSection}>
+          {/* Ambient Radial Glow Field with Scroll Parallax */}
+          <View
+            style={[
+              styles.heroAmbientGlow,
+              Platform.OS === 'web' && {
+                transform: `translateY(${heroParallax * 0.5}px)`,
+              } as any,
+            ]}
+          />
+
+          <View style={styles.heroGrid}>
+            {/* Left Column: Headlines & Actions */}
+            <View
+              style={[
+                styles.heroLeftCol,
+                Platform.OS === 'web' && {
+                  transform: `translateY(${heroParallax * 0.25}px)`,
+                } as any,
+              ]}
+            >
+              {/* Live Civic Network Status Pill */}
+              <View style={styles.heroStatusPill} testID="askme-reveal">
+                <View style={styles.livePulseDot} />
+                <Text style={styles.heroStatusText}>AI-POWERED CIVIC ACTION PLATFORM</Text>
+                <View style={styles.statusDivider} />
+                <Text style={styles.heroStatusLive}>19+ JURISDICTIONS LIVE</Text>
+              </View>
+
+              {/* Display Headline */}
+              <Text style={styles.heroHeadline} testID="askme-reveal">
+                Your City{'\n'}
+                Has a Problem.{'\n'}
+                Let's Make It{'\n'}
+                <Text style={styles.heroHeadlineOrange}>Heard.</Text>
+              </Text>
+
+              {/* Concise Supporting Subtitle */}
+              <Text style={styles.heroSubtext} testID="askme-reveal">
+                One photo, one voice, or one simple description. AskMe automatically resolves the exact statutory municipal jurisdiction and drafts an enforceable petition with legal citations in seconds.
+              </Text>
+
+              {/* Call to Actions */}
+              <View style={styles.heroCtaRow} testID="askme-reveal">
+                <TouchableOpacity
+                  style={styles.primaryReportBtn}
+                  onPress={handleStart}
+                  accessibilityRole="button"
+                  accessibilityLabel="Report a civic problem"
+                  activeOpacity={0.88}
+                >
+                  <Text style={styles.primaryReportBtnText}>Report a Problem</Text>
+                  <View style={styles.primaryArrowCircle}>
+                    <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.8} />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.discoverBtn}
+                  onPress={scrollToHowItWorks}
+                  accessibilityRole="button"
+                  accessibilityLabel="Discover how ASKME works"
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.discoverBtnText}>Discover ASKME</Text>
+                  <View style={styles.playIconCircle}>
+                    <Play size={10} color="#FFFFFF" fill="#FFFFFF" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              {/* Citizen Trust Accreditation Badges */}
+              <View style={styles.trustBadgeRow} testID="askme-reveal">
+                <View style={styles.trustItem}>
+                  <CheckCircle2 size={13} color="#22C55E" />
+                  <Text style={styles.trustItemText}>Statutory Verification</Text>
+                </View>
+                <View style={styles.trustDot} />
+                <View style={styles.trustItem}>
+                  <ShieldCheck size={13} color="#F47738" />
+                  <Text style={styles.trustItemText}>CPGRAMS & Swachhata Aligned</Text>
+                </View>
+                <View style={styles.trustDot} />
+                <View style={styles.trustItem}>
+                  <Sparkles size={13} color="#FF6652" />
+                  <Text style={styles.trustItemText}>100% Free & Open</Text>
+                </View>
+              </View>
+            </View>
+
+            {/* Right Column: Signature 3D Civic Signal Core with Orbiting Telemetry */}
+            <View
+              style={[
+                styles.heroRightCol,
+                Platform.OS === 'web' && {
+                  transform: `translateY(${heroParallax * 0.15}px)`,
+                } as any,
+              ]}
+            >
+              <HeroIllustration />
+            </View>
           </View>
-          <Text style={styles.sectionTitle}>
-            How <Text style={{ color: '#F47738' }}>ASKME</Text> Works
-          </Text>
-          <Text style={styles.sectionSubtitle}>
-            From neighborhood hazard to verified statutory submission in five seamless steps.
-          </Text>
+
+          {/* Floating Scroll Cue in Hero */}
+          {scrollY < 60 && (
+            <TouchableOpacity
+              style={styles.scrollCuePill}
+              onPress={scrollToHowItWorks}
+              activeOpacity={0.8}
+              accessibilityLabel="Scroll down to explore features"
+            >
+              <Text style={styles.scrollCueText}>SCROLL TO EXPLORE</Text>
+              <View style={[styles.bounceIcon, Platform.OS === 'web' && ({ className: 'bounce-cue' } as any)]}>
+                <ChevronDown size={13} color="#F47738" />
+              </View>
+            </TouchableOpacity>
+          )}
+
+          {/* Bottom Metrics Ticker Strip */}
+          <View style={styles.statsStrip} testID="askme-reveal">
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>500K+</Text>
+              <Text style={styles.statLabel}>Complaints Filed</Text>
+              <Text style={styles.statMicro}>Citizen grievances resolved</Text>
+            </View>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>200+</Text>
+              <Text style={styles.statLabel}>Cities Covered</Text>
+              <Text style={styles.statMicro}>Pan-India municipal coverage</Text>
+            </View>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>95%</Text>
+              <Text style={styles.statLabel}>Resolution Rate</Text>
+              <Text style={styles.statMicro}>Statutory jurisdiction match</Text>
+            </View>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>24×7</Text>
+              <Text style={styles.statLabel}>AI Assistance</Text>
+              <Text style={styles.statMicro}>On-device & edge reasoning</Text>
+            </View>
+          </View>
         </View>
 
-        <View style={styles.stagesPipeline}>
-          {/* Step 1: Report */}
-          <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageHeaderRow}>
-              <View style={styles.stageIconBox}>
-                <Camera size={17} color="#F47738" />
-              </View>
-              <Text style={styles.stageStepNumber}>01</Text>
+        {/* ================= 2. HOW ASKME WORKS (5 CONNECTED STAGES) ================= */}
+        <View style={styles.howItWorksSection} id="how-it-works" testID="askme-reveal">
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionEyebrowBadge}>
+              <Text style={styles.sectionEyebrowText}>STATUTORY ROUTING PIPELINE</Text>
             </View>
-            <Text style={styles.stageTitle}>Report</Text>
-            <Text style={styles.stageDesc}>
-              Capture photo evidence with EXIF GPS, speak in any Indian language, or write a short note.
+            <Text style={styles.sectionTitle}>
+              How <Text style={{ color: '#F47738' }}>ASKME</Text> Works
             </Text>
-            <View style={styles.stageAccentBar} />
+            <Text style={styles.sectionSubtitle}>
+              From neighborhood hazard to verified statutory submission in five seamless steps.
+            </Text>
           </View>
 
-          <View style={styles.pipelineArrow}>
-            <ArrowRight size={13} color="#5C5852" />
+          {/* Dynamic Illuminated Circuit Track */}
+          <View style={styles.circuitTrackWrapper}>
+            <View
+              style={[
+                styles.circuitTrackFill,
+                {
+                  width: `${Math.min(100, Math.max(0, ((scrollY - 280) / 450) * 100))}%`,
+                },
+              ]}
+            />
           </View>
 
-          {/* Step 2: Analyze */}
-          <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageHeaderRow}>
-              <View style={styles.stageIconBox}>
-                <Sparkles size={17} color="#F47738" />
+          <View style={styles.stagesPipeline}>
+            {/* Step 1: Report */}
+            <View style={styles.stageCard} testID="askme-reveal">
+              <View style={styles.stageHeaderRow}>
+                <View style={styles.stageIconBox}>
+                  <Camera size={17} color="#F47738" />
+                </View>
+                <Text style={styles.stageStepNumber}>01</Text>
               </View>
-              <Text style={styles.stageStepNumber}>02</Text>
+              <Text style={styles.stageTitle}>Report</Text>
+              <Text style={styles.stageDesc}>
+                Capture photo evidence with EXIF GPS, speak in any Indian language, or write a short note.
+              </Text>
+              <View style={styles.stageAccentBar} />
             </View>
-            <Text style={styles.stageTitle}>Analyze</Text>
-            <Text style={styles.stageDesc}>
-              Multimodal AI separates observed visual evidence from citizen facts and evaluates civic hazard severity.
-            </Text>
-            <View style={styles.stageAccentBar} />
-          </View>
 
-          <View style={styles.pipelineArrow}>
-            <ArrowRight size={13} color="#5C5852" />
-          </View>
+            <View style={styles.pipelineArrow}>
+              <ArrowRight size={13} color="#5C5852" />
+            </View>
 
-          {/* Step 3: Identify */}
-          <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageHeaderRow}>
-              <View style={styles.stageIconBox}>
-                <Search size={17} color="#F47738" />
+            {/* Step 2: Analyze */}
+            <View style={styles.stageCard} testID="askme-reveal">
+              <View style={styles.stageHeaderRow}>
+                <View style={styles.stageIconBox}>
+                  <Sparkles size={17} color="#F47738" />
+                </View>
+                <Text style={styles.stageStepNumber}>02</Text>
               </View>
-              <Text style={styles.stageStepNumber}>03</Text>
+              <Text style={styles.stageTitle}>Analyze</Text>
+              <Text style={styles.stageDesc}>
+                Multimodal AI separates observed visual evidence from citizen facts and evaluates civic hazard severity.
+              </Text>
+              <View style={styles.stageAccentBar} />
             </View>
-            <Text style={styles.stageTitle}>Identify</Text>
-            <Text style={styles.stageDesc}>
-              Matches exact municipal ward, zonal engineer, or national highway division with 100% boundary accuracy.
-            </Text>
-            <View style={styles.stageAccentBar} />
-          </View>
 
-          <View style={styles.pipelineArrow}>
-            <ArrowRight size={13} color="#5C5852" />
-          </View>
+            <View style={styles.pipelineArrow}>
+              <ArrowRight size={13} color="#5C5852" />
+            </View>
 
-          {/* Step 4: Generate */}
-          <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageHeaderRow}>
-              <View style={styles.stageIconBox}>
-                <FileText size={17} color="#F47738" />
+            {/* Step 3: Identify */}
+            <View style={styles.stageCard} testID="askme-reveal">
+              <View style={styles.stageHeaderRow}>
+                <View style={styles.stageIconBox}>
+                  <Search size={17} color="#F47738" />
+                </View>
+                <Text style={styles.stageStepNumber}>03</Text>
               </View>
-              <Text style={styles.stageStepNumber}>04</Text>
+              <Text style={styles.stageTitle}>Identify</Text>
+              <Text style={styles.stageDesc}>
+                Matches exact municipal ward, zonal engineer, or national highway division with 100% boundary accuracy.
+              </Text>
+              <View style={styles.stageAccentBar} />
             </View>
-            <Text style={styles.stageTitle}>Generate</Text>
-            <Text style={styles.stageDesc}>
-              Drafts a formal, legally enforceable grievance petition citing specific municipal acts and Article 21.
-            </Text>
-            <View style={styles.stageAccentBar} />
-          </View>
 
-          <View style={styles.pipelineArrow}>
-            <ArrowRight size={13} color="#5C5852" />
-          </View>
+            <View style={styles.pipelineArrow}>
+              <ArrowRight size={13} color="#5C5852" />
+            </View>
 
-          {/* Step 5: Send */}
-          <View style={styles.stageCard} testID="askme-reveal">
-            <View style={styles.stageHeaderRow}>
-              <View style={styles.stageIconBox}>
-                <Send size={17} color="#F47738" />
+            {/* Step 4: Generate */}
+            <View style={styles.stageCard} testID="askme-reveal">
+              <View style={styles.stageHeaderRow}>
+                <View style={styles.stageIconBox}>
+                  <FileText size={17} color="#F47738" />
+                </View>
+                <Text style={styles.stageStepNumber}>04</Text>
               </View>
-              <Text style={styles.stageStepNumber}>05</Text>
+              <Text style={styles.stageTitle}>Generate</Text>
+              <Text style={styles.stageDesc}>
+                Drafts a formal, legally enforceable grievance petition citing specific municipal acts and Article 21.
+              </Text>
+              <View style={styles.stageAccentBar} />
             </View>
-            <Text style={styles.stageTitle}>Dispatch</Text>
-            <Text style={styles.stageDesc}>
-              Transparent submission directly to verified portals (CPGRAMS, Swachhata, BBMP, GCC, or NHAI).
-            </Text>
-            <View style={styles.stageAccentBar} />
+
+            <View style={styles.pipelineArrow}>
+              <ArrowRight size={13} color="#5C5852" />
+            </View>
+
+            {/* Step 5: Send */}
+            <View style={styles.stageCard} testID="askme-reveal">
+              <View style={styles.stageHeaderRow}>
+                <View style={styles.stageIconBox}>
+                  <Send size={17} color="#F47738" />
+                </View>
+                <Text style={styles.stageStepNumber}>05</Text>
+              </View>
+              <Text style={styles.stageTitle}>Dispatch</Text>
+              <Text style={styles.stageDesc}>
+                Transparent submission directly to verified portals (CPGRAMS, Swachhata, BBMP, GCC, or NHAI).
+              </Text>
+              <View style={styles.stageAccentBar} />
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* ================= 3. REPORT IT YOUR WAY (3-CARD BENTO) ================= */}
-      <View style={styles.reportYourWaySection} id="report-your-way" testID="askme-reveal">
-        <View style={styles.sectionHeader}>
-          <View style={styles.sectionEyebrowBadge}>
-            <Text style={styles.sectionEyebrowText}>MULTIMODAL EVIDENCE ENGINE</Text>
+        {/* ================= 3. REPORT IT YOUR WAY (3-CARD BENTO) ================= */}
+        <View style={styles.reportYourWaySection} id="report-your-way" testID="askme-reveal">
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionEyebrowBadge}>
+              <Text style={styles.sectionEyebrowText}>MULTIMODAL EVIDENCE ENGINE</Text>
+            </View>
+            <Text style={styles.sectionTitle}>
+              Report It <Text style={{ color: '#F47738' }}>Your Way</Text>
+            </Text>
+            <Text style={styles.sectionSubtitle}>
+              Every citizen expresses differently. Upload a photo, speak in your language, or type what happened.
+            </Text>
           </View>
-          <Text style={styles.sectionTitle}>
-            Report It <Text style={{ color: '#F47738' }}>Your Way</Text>
-          </Text>
-          <Text style={styles.sectionSubtitle}>
-            Every citizen expresses differently. Upload a photo, speak in your language, or type what happened.
-          </Text>
-        </View>
 
-        <View style={styles.bentoRow}>
-          {/* Card 1: Photo */}
-          <TouchableOpacity
-            style={styles.methodCard}
-            onPress={handleStart}
-            activeOpacity={0.88}
-            testID="askme-reveal"
-          >
-            <View>
-              <View style={styles.methodCardHeader}>
-                <View style={styles.methodIconCircle}>
-                  <Camera size={19} color="#FFFFFF" />
+          <View style={styles.bentoRow}>
+            {/* Card 1: Photo */}
+            <TouchableOpacity
+              style={styles.methodCard}
+              onPress={handleStart}
+              activeOpacity={0.88}
+              testID="askme-reveal"
+              {...(Platform.OS === 'web' ? { 'data-reveal': 'left' } as any : {})}
+            >
+              <View>
+                <View style={styles.methodCardHeader}>
+                  <View style={styles.methodIconCircle}>
+                    <Camera size={19} color="#FFFFFF" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.methodCardTitle}>Photo Evidence</Text>
+                    <Text style={styles.methodCardSub}>Visual inspection & EXIF location</Text>
+                  </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.methodCardTitle}>Photo Evidence</Text>
-                  <Text style={styles.methodCardSub}>Visual inspection & EXIF location</Text>
-                </View>
-              </View>
 
-              <View style={styles.methodPreviewArea}>
-                <View style={styles.mockViewfinder}>
-                  <View style={styles.viewfinderCornerTL} />
-                  <View style={styles.viewfinderCornerTR} />
-                  <View style={styles.viewfinderCornerBL} />
-                  <View style={styles.viewfinderCornerBR} />
-                  <View style={styles.crosshair} />
-                  <Text style={styles.mockViewfinderText}>EXIF GPS AUTO-DETECTION</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.cardFooterAction}>
-              <Text style={styles.cardActionLabel}>Upload Evidence</Text>
-              <View style={styles.circleActionArrow}>
-                <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
-              </View>
-            </View>
-          </TouchableOpacity>
-
-          {/* Card 2: Voice */}
-          <TouchableOpacity
-            style={styles.methodCard}
-            onPress={handleStart}
-            activeOpacity={0.88}
-            testID="askme-reveal"
-          >
-            <View>
-              <View style={styles.methodCardHeader}>
-                <View style={[styles.methodIconCircle, styles.voiceActiveGlow]}>
-                  <Mic size={19} color="#F47738" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.methodCardTitle}>Acoustic Voice</Text>
-                  <Text style={styles.methodCardSub}>Speak in your mother tongue</Text>
-                </View>
-              </View>
-
-              <View style={styles.methodPreviewArea}>
-                <View style={styles.mockWaveform}>
-                  {[10, 24, 38, 16, 32, 46, 20, 36, 14, 28, 42, 18, 30].map((h, i) => (
-                    <View
-                      key={i}
-                      style={[
-                        styles.waveBar,
-                        { height: h, backgroundColor: i % 2 === 0 ? '#F47738' : '#FF7A45' },
-                      ]}
-                    />
-                  ))}
-                </View>
-                <Text style={styles.waveformLanguageBadge}>
-                  Tamil • Hindi • English • Telugu • Kannada
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.cardFooterAction}>
-              <Text style={styles.cardActionLabel}>Speak in Native Language</Text>
-              <View style={styles.circleActionArrow}>
-                <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
-              </View>
-            </View>
-          </TouchableOpacity>
-
-          {/* Card 3: Text */}
-          <TouchableOpacity
-            style={styles.methodCard}
-            onPress={handleStart}
-            activeOpacity={0.88}
-            testID="askme-reveal"
-          >
-            <View>
-              <View style={styles.methodCardHeader}>
-                <View style={styles.methodIconCircle}>
-                  <FileText size={19} color="#FFFFFF" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.methodCardTitle}>Text Summary</Text>
-                  <Text style={styles.methodCardSub}>Describe in your own words</Text>
-                </View>
-              </View>
-
-              <View style={styles.methodPreviewArea}>
-                <View style={styles.mockNote}>
-                  <Text style={styles.mockNoteText}>
-                    "Severe waterlogging and open manhole near Main Road intersection creating hazardous pedestrian conditions..."
-                  </Text>
-                  <View style={styles.mockNoteBadge}>
-                    <Text style={styles.mockNoteBadgeText}>STATUTORY GROUNDING</Text>
+                <View style={styles.methodPreviewArea}>
+                  <View style={styles.mockViewfinder}>
+                    <View style={styles.viewfinderCornerTL} />
+                    <View style={styles.viewfinderCornerTR} />
+                    <View style={styles.viewfinderCornerBL} />
+                    <View style={styles.viewfinderCornerBR} />
+                    <View style={styles.crosshair} />
+                    <Text style={styles.mockViewfinderText}>EXIF GPS AUTO-DETECTION</Text>
                   </View>
                 </View>
               </View>
-            </View>
 
-            <View style={styles.cardFooterAction}>
-              <Text style={styles.cardActionLabel}>Write Short Note</Text>
-              <View style={styles.circleActionArrow}>
-                <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
+              <View style={styles.cardFooterAction}>
+                <Text style={styles.cardActionLabel}>Upload Evidence</Text>
+                <View style={styles.circleActionArrow}>
+                  <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
+                </View>
               </View>
+            </TouchableOpacity>
+
+            {/* Card 2: Voice */}
+            <TouchableOpacity
+              style={styles.methodCard}
+              onPress={handleStart}
+              activeOpacity={0.88}
+              testID="askme-reveal"
+              {...(Platform.OS === 'web' ? { 'data-reveal': 'scale' } as any : {})}
+            >
+              <View>
+                <View style={styles.methodCardHeader}>
+                  <View style={[styles.methodIconCircle, styles.voiceActiveGlow]}>
+                    <Mic size={19} color="#F47738" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.methodCardTitle}>Acoustic Voice</Text>
+                    <Text style={styles.methodCardSub}>Speak in your mother tongue</Text>
+                  </View>
+                </View>
+
+                <View style={styles.methodPreviewArea}>
+                  <View style={styles.mockWaveform}>
+                    {[10, 24, 38, 16, 32, 46, 20, 36, 14, 28, 42, 18, 30].map((h, i) => (
+                      <View
+                        key={i}
+                        style={[
+                          styles.waveBar,
+                          { height: h, backgroundColor: i % 2 === 0 ? '#F47738' : '#FF7A45' },
+                        ]}
+                      />
+                    ))}
+                  </View>
+                  <Text style={styles.waveformLanguageBadge}>
+                    Tamil • Hindi • English • Telugu • Kannada
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.cardFooterAction}>
+                <Text style={styles.cardActionLabel}>Speak in Native Language</Text>
+                <View style={styles.circleActionArrow}>
+                  <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            {/* Card 3: Text */}
+            <TouchableOpacity
+              style={styles.methodCard}
+              onPress={handleStart}
+              activeOpacity={0.88}
+              testID="askme-reveal"
+              {...(Platform.OS === 'web' ? { 'data-reveal': 'right' } as any : {})}
+            >
+              <View>
+                <View style={styles.methodCardHeader}>
+                  <View style={styles.methodIconCircle}>
+                    <FileText size={19} color="#FFFFFF" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.methodCardTitle}>Text Summary</Text>
+                    <Text style={styles.methodCardSub}>Describe in your own words</Text>
+                  </View>
+                </View>
+
+                <View style={styles.methodPreviewArea}>
+                  <View style={styles.mockNote}>
+                    <Text style={styles.mockNoteText}>
+                      "Severe waterlogging and open manhole near Main Road intersection creating hazardous pedestrian conditions..."
+                    </Text>
+                    <View style={styles.mockNoteBadge}>
+                      <Text style={styles.mockNoteBadgeText}>STATUTORY GROUNDING</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.cardFooterAction}>
+                <Text style={styles.cardActionLabel}>Write Short Note</Text>
+                <View style={styles.circleActionArrow}>
+                  <ArrowRight size={13} color="#FFFFFF" strokeWidth={2.4} />
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* ================= 4. CINEMATIC CLOSING BANNER ================= */}
+        <View style={styles.closingBanner} testID="askme-reveal">
+          <View style={styles.closingAmbientGlow} />
+          <AskMeLogo size={64} showText={false} animated={true} />
+          <Text style={styles.closingHeadline}>
+            Your Voice Deserves to Be Heard.
+          </Text>
+          <Text style={styles.closingSubtext}>
+            Join thousands of active citizens transforming civic problems into legally sound petitions submitted directly to verified authorities across India.
+          </Text>
+          <TouchableOpacity
+            style={styles.closingCta}
+            onPress={handleStart}
+            accessibilityRole="button"
+            accessibilityLabel="Start your grievance complaint"
+            activeOpacity={0.88}
+          >
+            <Text style={styles.closingCtaText}>Start Your Complaint</Text>
+            <View style={styles.closingArrowCircle}>
+              <ArrowRight size={15} color="#FFFFFF" strokeWidth={2.6} />
             </View>
           </TouchableOpacity>
         </View>
-      </View>
 
-      {/* ================= 4. CINEMATIC CLOSING BANNER ================= */}
-      <View style={styles.closingBanner} testID="askme-reveal">
-        <View style={styles.closingAmbientGlow} />
-        <AskMeLogo size={64} showText={false} animated={true} />
-        <Text style={styles.closingHeadline}>
-          Your Voice Deserves to Be Heard.
-        </Text>
-        <Text style={styles.closingSubtext}>
-          Join thousands of active citizens transforming civic problems into legally sound petitions submitted directly to verified authorities across India.
-        </Text>
+        {/* ================= 5. MINIMAL DECLASSIFIED FOOTER ================= */}
+        <Footer
+          onNavigateHome={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}
+          onNavigateHowItWorks={scrollToHowItWorks}
+          onNavigateReport={onStartReport}
+        />
+      </ScrollView>
+
+      {/* Floating Back-to-Top Button */}
+      {scrollY > 380 && (
         <TouchableOpacity
-          style={styles.closingCta}
-          onPress={handleStart}
+          style={styles.floatingBackToTop}
+          onPress={scrollToTop}
           accessibilityRole="button"
-          accessibilityLabel="Start your grievance complaint"
-          activeOpacity={0.88}
+          accessibilityLabel="Scroll back to top"
+          activeOpacity={0.85}
         >
-          <Text style={styles.closingCtaText}>Start Your Complaint</Text>
-          <View style={styles.closingArrowCircle}>
-            <ArrowRight size={15} color="#FFFFFF" strokeWidth={2.6} />
-          </View>
+          <ArrowUp size={15} color="#FFFFFF" strokeWidth={2.6} />
+          <Text style={styles.backToTopText}>Top</Text>
         </TouchableOpacity>
-      </View>
-
-      {/* ================= 5. MINIMAL DECLASSIFIED FOOTER ================= */}
-      <Footer
-        onNavigateHome={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}
-        onNavigateHowItWorks={scrollToHowItWorks}
-        onNavigateReport={onStartReport}
-      />
-    </ScrollView>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  outerWrapper: {
+    flex: 1,
+    position: 'relative',
+    backgroundColor: '#0D0D0C',
+  },
+  topProgressTrack: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    zIndex: 99999,
+  },
+  topProgressBar: {
+    height: '100%',
+    backgroundColor: '#F47738',
+    borderRadius: 1.5,
+    ...(Platform.OS === 'web'
+      ? {
+          background: 'linear-gradient(90deg, #F47738, #FF6652, #FFAA5C)',
+          boxShadow: '0 0 10px rgba(244, 119, 56, 0.8)',
+          transition: 'width 0.1s linear',
+        }
+      : {}),
+  },
   container: {
     flex: 1,
     backgroundColor: '#0D0D0C',
@@ -1120,5 +1249,93 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.24)',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  scrollCuePill: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 24,
+    marginBottom: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: THEME.radii.pill,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.09)',
+    ...(Platform.OS === 'web'
+      ? {
+          cursor: 'pointer',
+          backdropFilter: 'blur(8px)',
+        }
+      : {}),
+  },
+  scrollCueText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#A8A49D',
+    letterSpacing: 1.2,
+    fontFamily: THEME.fonts.mono,
+  },
+  bounceIcon: {
+    width: 18,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  circuitTrackWrapper: {
+    width: '100%',
+    height: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderRadius: 1.5,
+    marginBottom: 24,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  circuitTrackFill: {
+    height: '100%',
+    backgroundColor: '#F47738',
+    borderRadius: 1.5,
+    ...(Platform.OS === 'web'
+      ? {
+          background: 'linear-gradient(90deg, #F47738, #FF6652, #FFAE68)',
+          boxShadow: '0 0 12px rgba(244, 119, 56, 0.9)',
+          transition: 'width 0.15s ease-out',
+        }
+      : {}),
+  },
+  floatingBackToTop: {
+    position: 'absolute',
+    bottom: 28,
+    right: 28,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#1E1E1C',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: THEME.radii.pill,
+    borderWidth: 1,
+    borderColor: 'rgba(244, 119, 56, 0.4)',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.6,
+    shadowRadius: 16,
+    elevation: 10,
+    zIndex: 9999,
+    ...(Platform.OS === 'web'
+      ? {
+          cursor: 'pointer',
+          boxShadow: '0 12px 28px -4px rgba(0, 0, 0, 0.7), 0 0 15px rgba(244, 119, 56, 0.25)',
+          transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+        }
+      : {}),
+  },
+  backToTopText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    fontFamily: THEME.fonts.mono,
+    letterSpacing: 0.5,
   },
 });
